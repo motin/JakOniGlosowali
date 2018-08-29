@@ -136,6 +136,19 @@ plot(as.phylo(hc), type = "phylogram", cex = 2.5,
 dev.off()
 
 par(mar=c(0,0,0,0), xpd=NA)
+png(countrySpecificPath("plot3_phylogram_long.png"),
+    width=as.integer(defaultWidth*2.0),
+    height=as.integer(defaultHeight*4.0),
+    pointsize=15,
+)
+plot(as.phylo(hc), type = "phylogram", cex = 2.5,
+     tip.color = partyColors[partyRepresentedByEachVote],
+     edge.width = 2,
+     no.margin = TRUE,
+     main=pattern)
+dev.off()
+
+par(mar=c(0,0,0,0), xpd=NA)
 png(countrySpecificPath("plot3alt_cladogram.png"),
     width=as.integer(defaultWidth*2.0),
     height=as.integer(defaultHeight*2.0),
