@@ -17,7 +17,8 @@ library(parallel)
 library(dendextend)
 
 # country to work with
-country <- "pl"
+# country <- "pl"
+country <- "se"
 
 countrySpecificPath <- function(path) {
   paste("./", country, "/", path, sep="")
