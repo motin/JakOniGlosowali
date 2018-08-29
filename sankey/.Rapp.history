@@ -1,7 +1,0 @@
-load("/Users/pbiecek/GitHub/JakOniGlosowali/sankey/flow.rda")
-ls()
-head(flow)
-head(flow,100)
-load("/Users/pbiecek/GitHub/JakOniGlosowali/sankey/flow.rda")
-ls()
-head(flow)
