@@ -16,6 +16,13 @@ library(tidyr)
 library(parallel)
 library(dendextend)
 
+# set working directory to the the path of the current open file in RStudio
+if (!require(rstudioapi)) install.packages("rstudioapi", dependencies = TRUE);
+library(rstudioapi)
+current_path <- getActiveDocumentContext()$path 
+setwd(dirname(current_path ))
+print( getwd() )
+
 # include data and common functions
 source("tools.R")
 
