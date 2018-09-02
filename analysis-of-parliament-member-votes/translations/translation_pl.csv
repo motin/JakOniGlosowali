@@ -1,6 +1,7 @@
 refs,pl
-change-language,Wybierz język
-change-country,Change country
+change-language,Język
+change-country,Kraj
+plot-type,Visualization type
 intro-html,<b>Podobieństwa w głosowaniach posłów</b>
 show-button-text,Pokaż!
 statutes-filter-instruction,Tylko głosowania o ustawach:

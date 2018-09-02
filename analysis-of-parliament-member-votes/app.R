@@ -18,7 +18,7 @@ ui <- fluidPage(
   
   includeCSS("style.css"),
   
-  uiOutput('page_content')
+  uiOutput("page_content")
   )
 
 server <- function(input, output) {
@@ -55,28 +55,30 @@ server <- function(input, output) {
     selectableVotingTopics <- countrySpecificData$selectableVotingTopics
     tagList(
       fluidRow(column(9, HTML(i18n()$t("intro-html"))),
-               column(3, selectInput('selected_language',
+               column(3, selectInput("selected_language",
                                      i18n()$t("change-language"),
                                      choices = translator$languages[! translator$languages %in% c("refs")],
                                      selected = input$selected_language),
-                      selectInput('selected_country',
+                      selectInput("selected_country",
                                   i18n()$t("change-country"),
                                   choices = c("se", "pl"),
-                                  selected = input$selected_country))
+                                  selected = input$selected_country),
+                      selectInput("plotType", 
+                                  i18n()$t("plot-type"), 
+                                  choices = c("fan", "phylogram", "cladogram", "unrooted", "radial"), 
+                                  selected = input$plotType))
       ),
       conditionalPanel("input.selected_country !== ''",
                        fluidRow(column(3, br(),p(i18n()$t("statutes-filter-instruction"))),
-                                column(6, selectInput("pattern", "", choices = selectableVotingTopics, selected = "", multiple = TRUE)),
-                                column(3, selectInput("plotType", "", choices = c("fan", "phylogram", "cladogram", "unrooted", "radial"), selected = ""))  ),
+                                column(9, selectInput("pattern", "", choices = selectableVotingTopics, selected = "", multiple = TRUE, width = "100%"))
+                       ),
                        fluidRow(column(12, plotOutput("speakerDendro", width = 1000, height = 1000))),
-                       fluidRow(column(12, plotOutput("votingDirectionPartyOverview", width = 1000, height = 500))),
-                       fluidRow(column(12,
-                                       HTML(i18n()$t("footer-html"))
-                       ))
-      )
+                       fluidRow(column(12, plotOutput("votingDirectionPartyOverview", width = 1000, height = 500)))
+      ),
+      fluidRow(column(12, HTML(i18n()$t("footer-html"))))
     )
   })
-
+  
   plotType <- reactive({
     input$plotType
   })

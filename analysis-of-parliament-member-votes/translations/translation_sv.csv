@@ -1,10 +1,11 @@
 refs,sv
-change-language, Byt språk
-change-country, Byt land
+change-language, Språk
+change-country, Land att analysera
+plot-type,Typ av visualisering
 intro-html,<b>Likheter i riksdagsmöternas röster</b>
 show-button-text,Visa!
 statutes-filter-instruction,Inkludera enbart röster på specifika utskottsförslag:
 progress-message,Beräknar...
 progress-detail,Det här kan ta en stund
 votings,Voteringar
-footer-html,"Baserat på <a href=”https://github.com/mi2-warsaw/JakOniGlosowali/tree/master/glosy” target=”_blank”>denna analys av polska riksdagsröster</a>"
+footer-html,"Ursprungligen baserad på <a href=”https://github.com/mi2-warsaw/JakOniGlosowali/tree/master/glosy” target=”_blank”>denna analys av polska riksdagsröster</a>"
