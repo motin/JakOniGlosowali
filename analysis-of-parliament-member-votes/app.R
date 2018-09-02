@@ -133,34 +133,40 @@ ustawy <-c("administracji podatkowej", "bateriach i akumulatorach oraz niektóry
 names(ustawy) <- paste("ustawa o", ustawy)
 
 ui <- fluidPage(
-tags$head(tags$script("(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-                        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-                        ga('create', 'UA-5650686-6', 'auto');
-                        ga('send', 'pageview');")),
+    tags$head(tags$script("(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+                            ga('create', 'UA-5650686-6', 'auto');
+                            ga('send', 'pageview');")),
 
-includeCSS("style.css"),
+    includeCSS("style.css"),
 
-fluidRow(column(12, HTML("<b>Podobieństwa w głosowaniach posłów VII kadencji</b>.<br>
-                       Wybierz ustawy nad którymi głosowano (lub pozostaw puste pole) i naciśnij przycisk <b>Pokaż</b>."))),
-
-fluidRow(column(3, br(),p("Tylko głosowania o ustawach ")),
-column(4, selectInput("slowo", "", choices = sort(ustawy), selected = "", multiple = TRUE)),
-column(3, br(),actionButton("go", "Pokaż!")),
-column(2, selectInput("typ", "", choices = c("fan", "phylogram", "cladogram", "unrooted", "radial"), selected = ""))  ),
-fluidRow(column(12, plotOutput("speakerDendro", width = 1300, height = 1300))),
-#  fluidRow(column(12, plotOutput("speakerDendro2", width = 1000, height = 300))),
-fluidRow(column(12,
-HTML("Aplikacja wykonana w ramach hackatonu <a href='http://www.meetup.com/Spotkania-Entuzjastow-R-Warsaw-R-Users-Group-Meetup/events/225061731/'>Jak oni głosowali</a> organizowanego przez fundację <a href='http://smarterpoland.pl'>SmarterPoland</a>. <br>
-                       Współpraca i konsultacje merytoryczne: <a href='http://mamprawowiedziec.pl/'>Mam Prawo Wiedzieć</a><br>
-                       Dane pobrane z pakietu <a href='https://github.com/mi2-warsaw/sejmRP'>sejmRP</a><br>
-                       <br><br><a href='http://mamprawowiedziec.pl/'><img width='200px' src='https://github.com/mi2-warsaw/JakOniGlosowali/raw/master/wyszukiwarka/shiny/logo-MPW-CMYK-pion.jpg'/></a>&nbsp;&nbsp;
-                       <a href='http://smarterpoland.pl'><img width='140px' src='https://github.com/mi2-warsaw/JakOniGlosowali/raw/master/wyszukiwarka/shiny/smarterpoland.png'/></a>.")
-))
+    uiOutput('page_content')
 )
 
 server <- function(input, output) {
+
+    output$page_content <- renderUI({
+      tagList(
+        fluidRow(column(12, HTML("<b>Podobieństwa w głosowaniach posłów VII kadencji</b>.<br>
+                               Wybierz ustawy nad którymi głosowano (lub pozostaw puste pole) i naciśnij przycisk <b>Pokaż</b>."))),
+
+        fluidRow(column(3, br(),p("Tylko głosowania o ustawach ")),
+        column(4, selectInput("slowo", "", choices = sort(ustawy), selected = "", multiple = TRUE)),
+        column(3, br(),actionButton("go", "Pokaż!")),
+        column(2, selectInput("typ", "", choices = c("fan", "phylogram", "cladogram", "unrooted", "radial"), selected = ""))  ),
+        fluidRow(column(12, plotOutput("speakerDendro", width = 1300, height = 1300))),
+        #  fluidRow(column(12, plotOutput("speakerDendro2", width = 1000, height = 300))),
+        fluidRow(column(12,
+        HTML("Aplikacja wykonana w ramach hackatonu <a href='http://www.meetup.com/Spotkania-Entuzjastow-R-Warsaw-R-Users-Group-Meetup/events/225061731/'>Jak oni głosowali</a> organizowanego przez fundację <a href='http://smarterpoland.pl'>SmarterPoland</a>. <br>
+                               Współpraca i konsultacje merytoryczne: <a href='http://mamprawowiedziec.pl/'>Mam Prawo Wiedzieć</a><br>
+                               Dane pobrane z pakietu <a href='https://github.com/mi2-warsaw/sejmRP'>sejmRP</a><br>
+                               <br><br><a href='http://mamprawowiedziec.pl/'><img width='200px' src='https://github.com/mi2-warsaw/JakOniGlosowali/raw/master/wyszukiwarka/shiny/logo-MPW-CMYK-pion.jpg'/></a>&nbsp;&nbsp;
+                               <a href='http://smarterpoland.pl'><img width='140px' src='https://github.com/mi2-warsaw/JakOniGlosowali/raw/master/wyszukiwarka/shiny/smarterpoland.png'/></a>.")
+        ))
+      )
+    })
 
     wartosc <- eventReactive(input$go, {
         c(input$typ, input$slowo)
