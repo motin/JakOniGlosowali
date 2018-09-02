@@ -1,4 +1,4 @@
-partyColors <- c(PO = "orange3", PiS = "blue4", RP = "gold3", PSL="green4", SLD="red3", SP="blue1",
+partyColors <<- c(PO = "orange3", PiS = "blue4", RP = "gold3", PSL="green4", SLD="red3", SP="blue1",
                  `niez.` = "grey", ID="gold4", TR="gold3", KPSP="blue2", BiG="orange2",
                  ZP="blue2", BC ="blue2" )
 # Nieobecny = Absent, Przeciw = Against, Wstrzymał się = Abstained, Za = For
@@ -27,7 +27,7 @@ all_votes$voter_id <- all_votes$voter_name
 # nazwy ustaw = names of laws
 # ustawy = bill
 # zmianie ustawy = change of the bill
-ustawy <- grep(unique(all_votes$topic_voting), pattern = "ustawy o", value=TRUE)
+ustawy <<- grep(unique(all_votes$topic_voting), pattern = "ustawy o", value=TRUE)
 ustawy2 <- sapply(ustawy, function(x) {
   paste(strsplit(x, split= "ustawy o")[[1]][-1], collapse= "ustawy o")
 })
@@ -41,6 +41,6 @@ ustawy3 <- (gsub(ustawy2, pattern=" *[-,\\(].*$", replacement = ""))
 ustawy3 <- names(which(table(ustawy3) > 5))
 
 # optionally filter votes on specific topics (an empty pattern = no filter)
-pattern <- "o ochronie zwierząt" # about animal protection
-pattern <- "szkolnict" # school
-pattern <- ""
+pattern <<- "o ochronie zwierząt" # about animal protection
+pattern <<- "szkolnict" # school
+pattern <<- ""

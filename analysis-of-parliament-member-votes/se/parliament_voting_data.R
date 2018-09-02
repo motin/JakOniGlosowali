@@ -1,7 +1,7 @@
 library(dplyr)
 
 # colors courtesy of https://gist.github.com/peterdalle/9088e2af257e59b8f5e3de1a8118d786
-partyColors <- c(V = "#aa2016", # a bit darker vs the color in the original source (#DA291C)
+partyColors <<- c(V = "#aa2016", # a bit darker vs the color in the original source (#DA291C)
                  S = "#E8112d",
                  MP = "#83CF39",
                  C = "#009933",
@@ -14,7 +14,7 @@ partyColors <- c(V = "#aa2016", # a bit darker vs the color in the original sour
                  PP = "#572B85",
                  `-` = "grey")
 
-partyNames <- c(V = "Vänsterpartiet",
+partyNames <<- c(V = "Vänsterpartiet",
                 S = "Socialdemokraterna",
                 MP = "Miljöpartiet",
                 C = "Centern",
@@ -62,4 +62,4 @@ all_votes <- all_votes %>%
   filter(period %in% c("2014/15", "2015/16", "2016/17", "2017/18"))
 
 # optionally filter votes on specific topics (an empty pattern = no filter)
-pattern <- ""
+pattern <<- ""

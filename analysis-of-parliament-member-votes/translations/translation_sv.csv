@@ -1,5 +1,6 @@
 refs,sv
 change-language, Byt språk
+change-country, Byt land
 intro-html,"<b>Likheter i riksdagsmöternas röster.</b>.<br>Välj specifika utskottsförslag (eller lämna fältet blankt) och tryck på <b>Visa</b>-knappen."
 show-button-text,Visa!
 statutes-filter-instruction,Inkludera enbart röster på specifika utskottsförslag

@@ -153,6 +153,23 @@ ui <- fluidPage(
 
 server <- function(input, output) {
   
+  updateCountrySpecificData <- reactive({
+    # country to work with
+    country <<- input$selected_country
+    message("Country: ")
+    cat(str(country))
+
+    if (length(country) == 0 || ! country %in% c("se", "pl")) {
+      message("No valid country selected yet. Defaulting to sweden")
+      country <<- "se"
+    }
+
+    loadCountrySpecificData()
+    req(all_votes)
+
+    all_votes
+  })
+  
   i18n <- reactive({
     selected <- input$selected_language
     if (length(selected) > 0 && selected %in% translator$languages) {
@@ -162,23 +179,29 @@ server <- function(input, output) {
   })
   
   output$page_content <- renderUI({
+    updateCountrySpecificData()
     tagList(
       fluidRow(column(9, HTML(i18n()$t("intro-html"))),
                column(3, selectInput('selected_language',
                                      i18n()$t("change-language"),
                                      choices = translator$languages[! translator$languages %in% c("refs")],
-                                     selected = input$selected_language))
+                                     selected = input$selected_language),
+                      selectInput('selected_country',
+                                  i18n()$t("change-country"),
+                                  choices = c("se", "pl"),
+                                  selected = input$selected_country))
       ),
-      
-      fluidRow(column(3, br(),p(i18n()$t("statutes-filter-instruction"))),
-               column(4, selectInput("slowo", "", choices = sort(ustawy), selected = "", multiple = TRUE)),
-               column(3, br(),actionButton("go", i18n()$t("show-button-text"))),
-               column(2, selectInput("typ", "", choices = c("fan", "phylogram", "cladogram", "unrooted", "radial"), selected = ""))  ),
-      fluidRow(column(12, plotOutput("speakerDendro", width = 1300, height = 1300))),
-      #  fluidRow(column(12, plotOutput("speakerDendro2", width = 1000, height = 300))),
-      fluidRow(column(12,
-                      HTML(i18n()$t("footer-html"))
-      ))
+      conditionalPanel("input.selected_country !== ''",
+                       fluidRow(column(3, br(),p(i18n()$t("statutes-filter-instruction"))),
+                                column(4, selectInput("slowo", "", choices = sort(ustawy), selected = "", multiple = TRUE)),
+                                column(3, br(),actionButton("go", i18n()$t("show-button-text"))),
+                                column(2, selectInput("typ", "", choices = c("fan", "phylogram", "cladogram", "unrooted", "radial"), selected = ""))  ),
+                       fluidRow(column(12, plotOutput("speakerDendro", width = 1300, height = 1300))),
+                       #  fluidRow(column(12, plotOutput("speakerDendro2", width = 1000, height = 300))),
+                       fluidRow(column(12,
+                                       HTML(i18n()$t("footer-html"))
+                       ))
+      )
     )
   })
   
@@ -189,6 +212,7 @@ server <- function(input, output) {
   output$speakerDendro <- renderPlot({
     withProgress(message = i18n()$t("progress-message"),
                  detail = i18n()$t("progress-detail"), value = 0, {
+                   updateCountrySpecificData()
                    getSpeakerDendro(wartosc())
                  })
   })
@@ -196,6 +220,7 @@ server <- function(input, output) {
   output$speakerDendro2 <- renderPlot({
     withProgress(message = i18n()$t("progress-message"),
                  detail = i18n()$t("progress-detail"), value = 0, {
+                   updateCountrySpecificData()
                    getSpeakerDendro2(wartosc())
                  })
   })

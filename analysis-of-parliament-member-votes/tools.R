@@ -1,21 +1,35 @@
+if (!require(cluster)) install.packages("cluster", dependencies = TRUE);
+if (!require(ggdendro)) install.packages("ggdendro", dependencies = TRUE);
+if (!require(ape)) install.packages("ape", dependencies = TRUE);
+if (!require(RColorBrewer)) install.packages("RColorBrewer", dependencies = TRUE);
+if (!require(dplyr)) install.packages("dplyr", dependencies = TRUE);
+if (!require(tidyr)) install.packages("tidyr", dependencies = TRUE);
+if (!require(parallel)) install.packages("parallel", dependencies = TRUE);
+if (!require(dendextend)) install.packages("dendextend", dependencies = TRUE);
+
 library(cluster)
 library(ggdendro)
 library(ape)
 library(RColorBrewer)
 library(dplyr)
 library(tidyr)
+library(parallel)
+library(dendextend)
 
-# country to work with
-# country <- "pl"
-country <- "se"
-
-countrySpecificPath <- function(path) {
-  paste("./", country, "/", path, sep="")
+loadCountrySpecificData <- function() {
+  
+  message("loadCountrySpecificData country:")
+  cat(str(country))
+  
+  countrySpecificPath <<- function(path) {
+    paste("./", country, "/", path, sep="")
+  }
+  
+  source(countrySpecificPath("parliament_voting_data.R"))
+  
+  scores <<- c(`Absent` = 0, `Against` = -2, `Abstained` = -1, `For` = 2)
+  
 }
-
-source(countrySpecificPath("parliament_voting_data.R"))
-
-scores <- c(`Absent` = 0, `Against` = -2, `Abstained` = -1, `For` = 2)
 
 getSpeakerDendro <- function(params) {
   cat(params)

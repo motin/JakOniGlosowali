@@ -1,27 +1,13 @@
-if (!require(cluster)) install.packages("cluster", dependencies = TRUE);
-if (!require(ggdendro)) install.packages("ggdendro", dependencies = TRUE);
-if (!require(ape)) install.packages("ape", dependencies = TRUE);
-if (!require(RColorBrewer)) install.packages("RColorBrewer", dependencies = TRUE);
-if (!require(dplyr)) install.packages("dplyr", dependencies = TRUE);
-if (!require(tidyr)) install.packages("tidyr", dependencies = TRUE);
-if (!require(parallel)) install.packages("parallel", dependencies = TRUE);
-if (!require(dendextend)) install.packages("dendextend", dependencies = TRUE);
-
-library(cluster)
-library(ggdendro)
-library(ape)
-library(RColorBrewer)
-library(dplyr)
-library(tidyr)
-library(parallel)
-library(dendextend)
-
 # set working directory to the the path of the current open file in RStudio
 if (!require(rstudioapi)) install.packages("rstudioapi", dependencies = TRUE);
 library(rstudioapi)
 current_path <- getActiveDocumentContext()$path 
 setwd(dirname(current_path ))
 print( getwd() )
+
+# country to work with
+# country <- "pl"
+country <- "se"
 
 # include data and common functions
 source("tools.R")

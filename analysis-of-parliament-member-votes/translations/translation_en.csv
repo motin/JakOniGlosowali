@@ -1,5 +1,6 @@
 refs,en
 change-language,Change language
+change-country,Change country
 intro-html,<b>Similarities in the votes of Members of Parliament.</b>.<br>Select the statutes over which you voted (or leave the field blank) and press the <b>Show</b> button.
 show-button-text,Show!
 statutes-filter-instruction,Only include votes on specific statutes
