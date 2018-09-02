@@ -1,6 +1,12 @@
 if (!require(shiny)) install.packages("shiny", dependencies = TRUE);
+if (!require(shiny.i18n)) {
+  if (!require(devtools)) install.packages("devtools", dependencies = TRUE);
+  devtools::install_github("Appsilon/shiny.i18n", dependencies = TRUE);
+}
 
 source("tools.R")
+
+translator <- Translator$new(translation_csvs_path = "translations")
 
 ustawy <-c("administracji podatkowej", "bateriach i akumulatorach oraz niektórych innych ustaw",
            "bezpieczeństwie imprez masowych oraz niektórych innych ustaw",
@@ -147,12 +153,24 @@ ui <- fluidPage(
 
 server <- function(input, output) {
   
+  i18n <- reactive({
+    selected <- input$selected_language
+    if (length(selected) > 0 && selected %in% translator$languages) {
+      translator$set_translation_language(selected)
+    }
+    translator
+  })
+  
   output$page_content <- renderUI({
     tagList(
-      fluidRow(column(12, HTML("<b>Podobieństwa w głosowaniach posłów VII kadencji</b>.<br>
-                               Wybierz ustawy nad którymi głosowano (lub pozostaw puste pole) i naciśnij przycisk <b>Pokaż</b>."))),
-      
-      
+      fluidRow(column(9, HTML("<b>Podobieństwa w głosowaniach posłów VII kadencji</b>.<br>
+                              Wybierz ustawy nad którymi głosowano (lub pozostaw puste pole) i naciśnij przycisk <b>Pokaż</b>.")),
+               column(3, selectInput('selected_language',
+                                     i18n()$t("Change language"),
+                                     choices = translator$languages,
+                                     selected = input$selected_language))
+      ),
+
       fluidRow(column(3, br(),p("Tylko głosowania o ustawach ")),
                column(4, selectInput("slowo", "", choices = sort(ustawy), selected = "", multiple = TRUE)),
                column(3, br(),actionButton("go", "Pokaż!")),
