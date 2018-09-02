@@ -170,17 +170,17 @@ rownames(distMat) <- uniqueVoterIds
 recalculateDistMat <- TRUE
 if (recalculateDistMat) {
   system.time({
-
+    
     iMax <- (length(uniqueVoterIds)-1)
     jMax <- length(uniqueVoterIds)
-
+    
     message("Pre-calculating lists of personal votes")
     results_selectionOfVotes <- mclapply(1:jMax,
-                                 FUN=function(i) {
-                                   selectionOfVotesI <- selectionOfVotes %>%
-                                     filter(voter_id %in% uniqueVoterIds[i])
-                                 },
-                                 mc.cores = numCores)
+                                         FUN=function(i) {
+                                           selectionOfVotesI <- selectionOfVotes %>%
+                                             filter(voter_id %in% uniqueVoterIds[i])
+                                         },
+                                         mc.cores = numCores)
     
     message("Summarizing intersections between member votes")
     for (i in 1:iMax) {
@@ -188,7 +188,7 @@ if (recalculateDistMat) {
       for (j in i:jMax) {
         selectionOfVotesI <- results_selectionOfVotes[[i]]
         selectionOfVotesJ <- results_selectionOfVotes[[j]]
-
+        
         selIJ <- merge(selectionOfVotesI[,c(1,2,3,4)], selectionOfVotesJ[,c(1,2,3,4)], by="id_voting")
         
         distMat[i,j] = mean(selIJ$vote.x == selIJ$vote.y)
@@ -247,4 +247,3 @@ plot(as.phylo(hc2), type = "fan", cex = 0.4,
      tip.color = colors[as.numeric(factor(voterIdsAndTheirMostFrequentParty[-rem]))],
      main=pattern)
 dev.off()
-

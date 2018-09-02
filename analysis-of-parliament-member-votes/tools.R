@@ -29,7 +29,7 @@ getSpeakerDendro <- function(params) {
       grep(unique(all_votes$topic_voting), pattern = w, value = TRUE, fixed = TRUE)
     })))
   }
-
+  
   selVotes <- all_votes %>%
     filter(topic_voting %in% tytulyGlos)
   
