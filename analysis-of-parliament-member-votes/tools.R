@@ -12,7 +12,9 @@ kol2 <- c(PO = "orange3", PiS = "blue4", RP = "gold3", PSL="green4", SLD="red3",
 scores <- c(`Nieobecny` = 0, `Przeciw` = -2, `Wstrzymał się` = -1, `Za` = 2)
 
 
+setwd("pl")
 load("all_votes.rda")
+setwd("..")
 
 getSpeakerDendro <- function(wzor) {
   cat(wzor)
