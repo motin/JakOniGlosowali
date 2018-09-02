@@ -129,7 +129,7 @@ ustawy <-c("administracji podatkowej", "bateriach i akumulatorach oraz niektóry
 
 names(ustawy) <- paste("ustawa o", ustawy)
 
-shinyUI(fluidPage(
+ui <- fluidPage(
   tags$head(tags$script("(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -155,5 +155,4 @@ shinyUI(fluidPage(
                        <br><br><a href='http://mamprawowiedziec.pl/'><img width='200px' src='https://github.com/mi2-warsaw/JakOniGlosowali/raw/master/wyszukiwarka/shiny/logo-MPW-CMYK-pion.jpg'/></a>&nbsp;&nbsp;
                        <a href='http://smarterpoland.pl'><img width='140px' src='https://github.com/mi2-warsaw/JakOniGlosowali/raw/master/wyszukiwarka/shiny/smarterpoland.png'/></a>.")
                   ))
-  )
 )

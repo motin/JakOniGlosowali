@@ -2,7 +2,7 @@ library(shiny)
 
 source("tools.R")
 
-shinyServer(function(input, output) {
+server <- function(input, output) {
   
   wartosc <- eventReactive(input$go, {
     c(input$typ, input$slowo)
@@ -22,4 +22,4 @@ shinyServer(function(input, output) {
                  })
   })
   
-})
+}
