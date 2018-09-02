@@ -1,2 +1,8 @@
 refs,sv
 change-language, Byt språk
+intro-html,"<b>Likheter i riksdagsmöternas röster.</b>.<br>Välj specifika utskottsförslag (eller lämna fältet blankt) och tryck på <b>Visa</b>-knappen."
+show-button-text,Visa!
+statutes-filter-instruction,Inkludera enbart röster på specifika utskottsförslag
+progress-message,Beräknar...
+progress-detail,Det här kan ta en stund
+footer-html,"Baserat på <a href=”https://github.com/mi2-warsaw/JakOniGlosowali/tree/master/glosy” target=”_blank”>denna analys av polska riksdagsröster</a>"

@@ -163,28 +163,23 @@ server <- function(input, output) {
   
   output$page_content <- renderUI({
     tagList(
-      fluidRow(column(9, HTML("<b>Podobieństwa w głosowaniach posłów VII kadencji</b>.<br>
-                              Wybierz ustawy nad którymi głosowano (lub pozostaw puste pole) i naciśnij przycisk <b>Pokaż</b>.")),
+      fluidRow(column(9, HTML(i18n()$t("intro-html"))),
                column(3, selectInput('selected_language',
                                      i18n()$t("change-language"),
                                      choices = translator$languages[! translator$languages %in% c("refs")],
                                      selected = input$selected_language))
       ),
-
-      fluidRow(column(3, br(),p("Tylko głosowania o ustawach ")),
+      
+      fluidRow(column(3, br(),p(i18n()$t("statutes-filter-instruction"))),
                column(4, selectInput("slowo", "", choices = sort(ustawy), selected = "", multiple = TRUE)),
-               column(3, br(),actionButton("go", "Pokaż!")),
+               column(3, br(),actionButton("go", i18n()$t("show-button-text"))),
                column(2, selectInput("typ", "", choices = c("fan", "phylogram", "cladogram", "unrooted", "radial"), selected = ""))  ),
       fluidRow(column(12, plotOutput("speakerDendro", width = 1300, height = 1300))),
       #  fluidRow(column(12, plotOutput("speakerDendro2", width = 1000, height = 300))),
       fluidRow(column(12,
-                      HTML("Aplikacja wykonana w ramach hackatonu <a href='http://www.meetup.com/Spotkania-Entuzjastow-R-Warsaw-R-Users-Group-Meetup/events/225061731/'>Jak oni głosowali</a> organizowanego przez fundację <a href='http://smarterpoland.pl'>SmarterPoland</a>. <br>
-                           Współpraca i konsultacje merytoryczne: <a href='http://mamprawowiedziec.pl/'>Mam Prawo Wiedzieć</a><br>
-                           Dane pobrane z pakietu <a href='https://github.com/mi2-warsaw/sejmRP'>sejmRP</a><br>
-                           <br><br><a href='http://mamprawowiedziec.pl/'><img width='200px' src='https://github.com/mi2-warsaw/JakOniGlosowali/raw/master/wyszukiwarka/shiny/logo-MPW-CMYK-pion.jpg'/></a>&nbsp;&nbsp;
-                           <a href='http://smarterpoland.pl'><img width='140px' src='https://github.com/mi2-warsaw/JakOniGlosowali/raw/master/wyszukiwarka/shiny/smarterpoland.png'/></a>.")
-                      ))
-                      )
+                      HTML(i18n()$t("footer-html"))
+      ))
+    )
   })
   
   wartosc <- eventReactive(input$go, {
@@ -192,19 +187,19 @@ server <- function(input, output) {
   })
   
   output$speakerDendro <- renderPlot({
-    withProgress(message = 'Twają obliczenia,',
-                 detail = 'To może chwilę potrwać...', value = 0, {
+    withProgress(message = i18n()$t("progress-message"),
+                 detail = i18n()$t("progress-detail"), value = 0, {
                    getSpeakerDendro(wartosc())
                  })
   })
   
   output$speakerDendro2 <- renderPlot({
-    withProgress(message = 'Twają obliczenia,',
-                 detail = 'To może chwilę potrwać...', value = 0, {
+    withProgress(message = i18n()$t("progress-message"),
+                 detail = i18n()$t("progress-detail"), value = 0, {
                    getSpeakerDendro2(wartosc())
                  })
   })
   
-  }
+}
 
 shinyApp(ui = ui, server = server)
