@@ -24,21 +24,23 @@ all_votes$voter_id <- all_votes$voter_name
 # debug
 # head(grep(unique(all_votes$topic_voting), pattern = "szkolnict", value = TRUE))
 
-# nazwy ustaw = names of laws
-# ustawy = bill
-# zmianie ustawy = change of the bill
-ustawy <<- grep(unique(all_votes$topic_voting), pattern = "ustawy o", value=TRUE)
-ustawy2 <- sapply(ustawy, function(x) {
-  paste(strsplit(x, split= "ustawy o")[[1]][-1], collapse= "ustawy o")
-})
-# ustawy2 <- (gsub(ustawy, pattern="^.*ustawy o *", replacement = ""))
-ustawy2 <- (gsub(ustawy2, pattern="^ zmianie ustawy - *", replacement = ""))
-ustawy2 <- (gsub(ustawy2, pattern="^ zmianie ustawy o *", replacement = ""))
-ustawy2 <- (gsub(ustawy2, pattern="^ *", replacement = ""))
-ustawy3 <- (gsub(ustawy2, pattern=" *[-,\\(].*$", replacement = ""))
-
-
-ustawy3 <- names(which(table(ustawy3) > 5))
+getSelectableVotingTopics <<- function(all_votes) {
+  # nazwy ustaw = names of laws
+  # ustawy = bill
+  # zmianie ustawy = change of the bill
+  selectableVotingTopics_a <<- grep(unique(all_votes$topic_voting), pattern = "ustawy o", value=TRUE)
+  selectableVotingTopics_b <- sapply(selectableVotingTopics_a, function(x) {
+    paste(strsplit(x, split= "ustawy o")[[1]][-1], collapse= "ustawy o")
+  })
+  #selectableVotingTopics_c <- (gsub(selectableVotingTopics_a, pattern="^.*ustawy o *", replacement = ""))
+  selectableVotingTopics_c <- (gsub(selectableVotingTopics_b, pattern="^ zmianie ustawy - *", replacement = ""))
+  selectableVotingTopics_d <- (gsub(selectableVotingTopics_c, pattern="^ zmianie ustawy o *", replacement = ""))
+  selectableVotingTopics_e <- (gsub(selectableVotingTopics_d, pattern="^ *", replacement = ""))
+  selectableVotingTopics_f <- (gsub(selectableVotingTopics_e, pattern=" *[-,\\(].*$", replacement = ""))
+  selectableVotingTopics <- names(which(table(selectableVotingTopics_f) > 5))
+  names(selectableVotingTopics) <- paste("ustawa o", selectableVotingTopics)
+  selectableVotingTopics
+}
 
 # optionally filter votes on specific topics (an empty pattern = no filter)
 pattern <<- "o ochronie zwierząt" # about animal protection

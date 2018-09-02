@@ -54,13 +54,13 @@ crunchVotingData <- function(selectionOfVotes) {
   voterIdsAndTheirVoterName <- apply(voterIdsVsVoterNameOccurances, 1, function(x) paste(colnames(voterIdsVsVoterNameOccurances)[x>0], collapse=","))
   
   # replace the vote column with their numeric scores
-  selectionOfVotes$vote <- scores[as.character(selectionOfVotes$vote)]
+  selectionOfVotes$vote_score <- scores[as.character(selectionOfVotes$vote)]
   
-  votersAndTheirVotes_ <- spread(selectionOfVotes[,c("voter_id","vote","id_voting")], key = id_voting, value = vote)
+  votersAndTheirVotes_ <- spread(selectionOfVotes[,c("voter_id","vote_score","id_voting")], key = id_voting, value = vote_score)
   voterIds <- votersAndTheirVotes_[,1]
   rownames(votersAndTheirVotes_) <- voterIds
   
-  votersAndTheirVotes <- votersAndTheirVotes_[,-1] # removes the voter_id column, leaving only the votes (columns) of each voter (rows)
+  votersAndTheirVotes <- votersAndTheirVotes_[,-1,drop=FALSE] # removes the voter_id column, leaving only the votes (columns) of each voter (rows)
   
   # only include parliament members that have voted on at least 90% of the votings
   voteFilter <- rowMeans(is.na(votersAndTheirVotes)) < 0.1
