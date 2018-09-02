@@ -16,13 +16,8 @@ library(tidyr)
 library(parallel)
 library(dendextend)
 
-# country to work with
-# country <- "pl"
-country <- "se"
-
-countrySpecificPath <- function(path) {
-  paste("./", country, "/", path, sep="")
-}
+# include data and common functions
+source("tools.R")
 
 # settings for plot exports
 defaultWidth <- 2000
@@ -31,10 +26,6 @@ defaultPointSize <- 40
 pdf.options(encoding='ISOLatin2.enc')
 
 numCores <- detectCores() # get the number of cores available
-
-source(countrySpecificPath("parliament_voting_data.R"))
-
-scores <- c(`Absent` = 0, `Against` = -2, `Abstained` = -1, `For` = 2)
 
 votingTopicsThatMatchesPattern <- grep(unique(all_votes$topic_voting), pattern = pattern, value = TRUE)
 selectionOfVotes <- all_votes %>%

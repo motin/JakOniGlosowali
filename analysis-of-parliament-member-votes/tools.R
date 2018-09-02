@@ -5,26 +5,27 @@ library(RColorBrewer)
 library(dplyr)
 library(tidyr)
 
-kol <- brewer.pal(9,"Set1")
-kol2 <- c(PO = "orange3", PiS = "blue4", RP = "gold3", PSL="green4", SLD="red3", SP="blue1",
-          `niez.` = "grey", ID="gold4", TR="gold3", KPSP="blue2", BiG="orange2",
-          ZP="blue2", BC ="blue2" )
-scores <- c(`Nieobecny` = 0, `Przeciw` = -2, `Wstrzymał się` = -1, `Za` = 2)
+# country to work with
+# country <- "pl"
+country <- "se"
 
+countrySpecificPath <- function(path) {
+  paste("./", country, "/", path, sep="")
+}
 
-setwd("pl")
-load("all_votes.rda")
-setwd("..")
+source(countrySpecificPath("parliament_voting_data.R"))
 
-getSpeakerDendro <- function(wzor) {
-  cat(wzor)
-  typ <- wzor[1]
-  wzor <- wzor[-1]
+scores <- c(`Absent` = 0, `Against` = -2, `Abstained` = -1, `For` = 2)
+
+getSpeakerDendro <- function(params) {
+  cat(params)
+  typ <- params[1]
+  pattern <- params[-1]
   
-  if (length(wzor) == 0 || wzor[1] == "") {
+  if (length(pattern) == 0 || pattern[1] == "") {
     tytulyGlos <- unique(all_votes$topic_voting)
   } else {
-    tytulyGlos <- unique(unlist(sapply(wzor, function(w) {
+    tytulyGlos <- unique(unlist(sapply(pattern, function(w) {
       grep(unique(all_votes$topic_voting), pattern = w, value = TRUE, fixed = TRUE)
     })))
   }
@@ -32,7 +33,7 @@ getSpeakerDendro <- function(wzor) {
   selVotes <- all_votes %>%
     filter(topic_voting %in% tytulyGlos)
   
-  tabi <- table(selVotes$surname_name, selVotes$club)
+  tabi <- table(selVotes$voter_id, selVotes$party)
   clubs <- apply(tabi, 1, function(x) paste(colnames(tabi)[x>0], collapse=","))
   clubs2 <- apply(tabi, 1, function(x) paste(colnames(tabi)[which.max(x)], collapse=","))
   
@@ -54,22 +55,22 @@ getSpeakerDendro <- function(wzor) {
   par(mar=c(1,1,2,1), xpd=NA, font=2, family="mono")
   
   plot(as.phylo(hc), type = typ, cex = 0.85,
-       tip.color = kol2[cVotes],
-       main=paste(paste(wzor, collapse = "\n"), "(głosowań:",length(unique(selVotes$id_voting)),")"),
+       tip.color = partyColors[cVotes],
+       main=paste(paste(pattern, collapse = "\n"), "(głosowań:",length(unique(selVotes$id_voting)),")"),
        rotate.tree=-85)
 }
 
 
 
-getSpeakerDendro2 <- function(wzor) {
-  typ <- wzor[1]
-  wzor <- wzor[-1]
-  cat(wzor)
+getSpeakerDendro2 <- function(params) {
+  typ <- params[1]
+  pattern <- params[-1]
+  cat(pattern)
   
-  if (length(wzor) == 0 || wzor[1] == "") {
+  if (length(pattern) == 0 || pattern[1] == "") {
     tytulyGlos <- unique(all_votes$topic_voting)
   } else {
-    tytulyGlos <- unique(unlist(sapply(wzor, function(w) {
+    tytulyGlos <- unique(unlist(sapply(pattern, function(w) {
       grep(unique(all_votes$topic_voting), pattern = w, value = TRUE, fixed = TRUE)
     })))
   }
@@ -77,7 +78,7 @@ getSpeakerDendro2 <- function(wzor) {
   selVotes <- all_votes %>%
     filter(topic_voting %in% tytulyGlos)
   
-  tabi2 <- table(selVotes$club,selVotes$vote)[,c(4,1,3,2)]
+  tabi2 <- table(selVotes$party,selVotes$vote)[,c(4,1,3,2)]
   par(mar=c(1,1,2,1), xpd=NA)
   mosaicplot(tabi2, off = c(0,0), border="white", 
              color=c("green3", "grey", "red4", "red2"), las=2,
