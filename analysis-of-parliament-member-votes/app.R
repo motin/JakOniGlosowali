@@ -21,35 +21,6 @@ ui <- fluidPage(
   uiOutput('page_content')
   )
 
-getSpeakerDendro <- function(params) {
-  plotType <- params[1]
-  pattern <- params[-1]
-  message("getVotingDirectionPartyOverview - pattern: ")
-  message(str(pattern))
-  message("getVotingDirectionPartyOverview - plotType: ")
-  message(plotType)
-  
-  selectionOfVotes <- getVotesThatMatchesTopicPattern(pattern)
-  
-  votingData <- crunchVotingData(selectionOfVotes)
-  
-  plotTitle <- paste(paste(pattern, collapse = "\n"), "(",length(unique(selectionOfVotes)),")")
-  par(mar=c(1,1,2,1), xpd=NA, font=2, family="mono")
-  phyloPlotPlain(votingData$hc, plotType, partyColors[votingData$partyRepresentedByEachVote], plotTitle)
-}
-
-getVotingDirectionPartyOverview <- function(params) {
-  pattern <- params[-1]
-  message("getVotingDirectionPartyOverview - pattern: ")
-  message(str(pattern))
-  
-  selectionOfVotes <- getVotesThatMatchesTopicPattern(pattern)
-  
-  par(mar=c(1,1,2,1), xpd=NA)
-  plotVotingDirectionPartyOverview(selectionOfVotes)
-  
-}
-
 server <- function(input, output) {
   
   updateCountrySpecificData <- reactive({
@@ -110,6 +81,35 @@ server <- function(input, output) {
   formValues <- eventReactive(input$go, {
     c(input$plotType, input$pattern)
   })
+  
+  getSpeakerDendro <- function(params) {
+    plotType <- params[1]
+    pattern <- params[-1]
+    message("getVotingDirectionPartyOverview - pattern: ")
+    message(str(pattern))
+    message("getVotingDirectionPartyOverview - plotType: ")
+    message(plotType)
+    
+    selectionOfVotes <- getVotesThatMatchesTopicPattern(pattern)
+    
+    votingData <- crunchVotingData(selectionOfVotes)
+    
+    plotTitle <- paste(paste(pattern, collapse = "\n"), "(",i18n()$t("votings"),length(unique(selectionOfVotes$id_voting)),")")
+    par(mar=c(1,1,2,1), xpd=NA, font=2, family="mono")
+    phyloPlotPlain(votingData$hc, plotType, partyColors[votingData$partyRepresentedByEachVote], plotTitle)
+  }
+  
+  getVotingDirectionPartyOverview <- function(params) {
+    pattern <- params[-1]
+    message("getVotingDirectionPartyOverview - pattern: ")
+    message(str(pattern))
+    
+    selectionOfVotes <- getVotesThatMatchesTopicPattern(pattern)
+    
+    par(mar=c(1,1,2,1), xpd=NA)
+    plotVotingDirectionPartyOverview(selectionOfVotes)
+    
+  }
   
   output$speakerDendro <- renderPlot({
     withProgress(message = i18n()$t("progress-message"),

@@ -6,4 +6,5 @@ show-button-text,Visa!
 statutes-filter-instruction,Inkludera enbart röster på specifika utskottsförslag
 progress-message,Beräknar...
 progress-detail,Det här kan ta en stund
+votings,Voteringar
 footer-html,"Baserat på <a href=”https://github.com/mi2-warsaw/JakOniGlosowali/tree/master/glosy” target=”_blank”>denna analys av polska riksdagsröster</a>"
