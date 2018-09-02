@@ -158,15 +158,15 @@ server <- function(input, output) {
     country <<- input$selected_country
     message("Country: ")
     cat(str(country))
-
+    
     if (length(country) == 0 || ! country %in% c("se", "pl")) {
       message("No valid country selected yet. Defaulting to sweden")
       country <<- "se"
     }
-
+    
     loadCountrySpecificData()
     req(all_votes)
-
+    
     all_votes
   })
   
