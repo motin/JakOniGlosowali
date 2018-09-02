@@ -166,8 +166,8 @@ server <- function(input, output) {
       fluidRow(column(9, HTML("<b>Podobieństwa w głosowaniach posłów VII kadencji</b>.<br>
                               Wybierz ustawy nad którymi głosowano (lub pozostaw puste pole) i naciśnij przycisk <b>Pokaż</b>.")),
                column(3, selectInput('selected_language',
-                                     i18n()$t("Change language"),
-                                     choices = translator$languages,
+                                     i18n()$t("change-language"),
+                                     choices = translator$languages[! translator$languages %in% c("refs")],
                                      selected = input$selected_language))
       ),
 
