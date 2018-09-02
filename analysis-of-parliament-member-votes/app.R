@@ -151,6 +151,31 @@ ui <- fluidPage(
   uiOutput('page_content')
   )
 
+getSpeakerDendro <- function(params) {
+  cat(params)
+  plotType <- params[1]
+  pattern <- params[-1]
+  
+  selectionOfVotes <- getVotesThatMatchesTopicPattern(pattern)
+  
+  votingData <- crunchVotingData(selectionOfVotes)
+
+  plotTitle <- paste(paste(pattern, collapse = "\n"), "(głosowań:",length(unique(selectionOfVotes)),")")
+  par(mar=c(1,1,2,1), xpd=NA, font=2, family="mono")
+  phyloPlotPlain(votingData$hc, plotType, partyColors[votingData$partyRepresentedByEachVote], plotTitle)
+}
+
+getVotingDirectionPartyOverview <- function(params) {
+  pattern <- params[-1]
+  cat(pattern)
+  
+  selectionOfVotes <- getVotesThatMatchesTopicPattern(pattern)
+  
+  par(mar=c(1,1,2,1), xpd=NA)
+  plotVotingDirectionPartyOverview(selectionOfVotes)
+  
+}
+
 server <- function(input, output) {
   
   updateCountrySpecificData <- reactive({
@@ -193,11 +218,11 @@ server <- function(input, output) {
       ),
       conditionalPanel("input.selected_country !== ''",
                        fluidRow(column(3, br(),p(i18n()$t("statutes-filter-instruction"))),
-                                column(4, selectInput("slowo", "", choices = sort(ustawy), selected = "", multiple = TRUE)),
+                                column(4, selectInput("pattern", "", choices = sort(ustawy), selected = "", multiple = TRUE)),
                                 column(3, br(),actionButton("go", i18n()$t("show-button-text"))),
-                                column(2, selectInput("typ", "", choices = c("fan", "phylogram", "cladogram", "unrooted", "radial"), selected = ""))  ),
-                       fluidRow(column(12, plotOutput("speakerDendro", width = 1300, height = 1300))),
-                       #  fluidRow(column(12, plotOutput("speakerDendro2", width = 1000, height = 300))),
+                                column(2, selectInput("plotType", "", choices = c("fan", "phylogram", "cladogram", "unrooted", "radial"), selected = ""))  ),
+                       fluidRow(column(12, plotOutput("speakerDendro", width = 1000, height = 1000))),
+                       fluidRow(column(12, plotOutput("votingDirectionPartyOverview", width = 1000, height = 500))),
                        fluidRow(column(12,
                                        HTML(i18n()$t("footer-html"))
                        ))
@@ -205,23 +230,23 @@ server <- function(input, output) {
     )
   })
   
-  wartosc <- eventReactive(input$go, {
-    c(input$typ, input$slowo)
+  formValues <- eventReactive(input$go, {
+    c(input$plotType, input$pattern)
   })
   
   output$speakerDendro <- renderPlot({
     withProgress(message = i18n()$t("progress-message"),
                  detail = i18n()$t("progress-detail"), value = 0, {
                    updateCountrySpecificData()
-                   getSpeakerDendro(wartosc())
+                   getSpeakerDendro(formValues())
                  })
   })
   
-  output$speakerDendro2 <- renderPlot({
+  output$votingDirectionPartyOverview <- renderPlot({
     withProgress(message = i18n()$t("progress-message"),
                  detail = i18n()$t("progress-detail"), value = 0, {
                    updateCountrySpecificData()
-                   getSpeakerDendro2(wartosc())
+                   getVotingDirectionPartyOverview(formValues())
                  })
   })
   

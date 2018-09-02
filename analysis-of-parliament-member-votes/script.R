@@ -20,129 +20,67 @@ pdf.options(encoding='ISOLatin2.enc')
 
 numCores <- detectCores() # get the number of cores available
 
-votingTopicsThatMatchesPattern <- grep(unique(all_votes$topic_voting), pattern = pattern, value = TRUE)
-selectionOfVotes <- all_votes %>%
-  filter(topic_voting %in% votingTopicsThatMatchesPattern)
-
-partiesAndTheirVotes <- table(selectionOfVotes$party,selectionOfVotes$vote)[,c("For","Absent","Abstained","Against")]
-tt<-with(selectionOfVotes, partiesAndTheirVotes)
-partiesAndTheirVotes_sortedByMostFrequent <- tt[order(tt[,2], decreasing=T),]
+selectionOfVotes <- getVotesThatMatchesTopicPattern(pattern)
 
 png(countrySpecificPath("plotA_mosaicplot.png"),
     width=defaultWidth,
     height=defaultHeight,
     pointsize=defaultPointSize,
 )
-mosaicplot(partiesAndTheirVotes_sortedByMostFrequent, off = c(0,0), border="white", 
-           color=c("green3", "grey", "red4", "red2"), las=2,
-           main="")
+plotVotingDirectionPartyOverview(selectionOfVotes)
 dev.off()
 
-voterIdsVsPartiesOccurances <- table(selectionOfVotes$voter_id, selectionOfVotes$party)
-voterIdsAndAllTheirParties <- apply(voterIdsVsPartiesOccurances, 1, function(x) paste(colnames(voterIdsVsPartiesOccurances)[x>0], collapse=","))
-voterIdsAndTheirMostFrequentParty <- apply(voterIdsVsPartiesOccurances, 1, function(x) paste(colnames(voterIdsVsPartiesOccurances)[which.max(x)], collapse=","))
+votingData <- crunchVotingData(selectionOfVotes)
 
-voterIdsVsVoterNameOccurances <- table(selectionOfVotes$voter_id, selectionOfVotes$voter_name)
-voterIdsAndTheirVoterName <- apply(voterIdsVsVoterNameOccurances, 1, function(x) paste(colnames(voterIdsVsVoterNameOccurances)[x>0], collapse=","))
+hc <- votingData$hc
+partyRepresentedByEachVote <- votingData$partyRepresentedByEachVote
 
-# replace the vote column with their numeric scores
-selectionOfVotes$vote <- scores[as.character(selectionOfVotes$vote)]
-
-votersAndTheirVotes_ <- spread(selectionOfVotes[,c("voter_id","vote","id_voting")], key = id_voting, value = vote)
-voterIds <- votersAndTheirVotes_[,1]
-rownames(votersAndTheirVotes_) <- voterIds
-
-votersAndTheirVotes <- votersAndTheirVotes_[,-1] # removes the voter_id column, leaving only the votes (columns) of each voter (rows)
-
-# only include parliament members that have voted on at least 90% of the votings
-voteFilter <- rowMeans(is.na(votersAndTheirVotes)) < 0.1
-partyRepresentedByEachVote <- voterIdsAndTheirMostFrequentParty[voteFilter]
-consistentVotersAndTheirVotes <- votersAndTheirVotes[voteFilter,]
-consistentVotersAndTheirVoterName <- voterIdsAndTheirVoterName[voteFilter]
-dVotes <- dist(consistentVotersAndTheirVotes)
-
-ag <- agnes(dVotes, method = "average")
-hc = as.hclust(ag)
-labels(hc) <- paste(consistentVotersAndTheirVoterName[order.hclust(hc)], " - ", voterIdsAndAllTheirParties[voteFilter][order.hclust(hc)], sep="")
-
-par(xpd=NA)
 png(countrySpecificPath("plot5_fan.png"),
     width=defaultWidth,
     height=defaultHeight,
     pointsize=defaultPointSize,
 )
-plot(as.phylo(hc), type = "fan", cex = 0.4,
-     tip.color = partyColors[partyRepresentedByEachVote],
-     edge.width = 2,
-     no.margin = TRUE,
-     main=pattern,
-     rotate.tree=-85)
+phyloPlot(hc, plotType="fan", partyColors[partyRepresentedByEachVote])
 dev.off()
 
-par(mar=c(1,1,2,1), xpd=NA)
 png(countrySpecificPath("plot4_unrooted.png"),
     width=defaultWidth,
     height=defaultHeight,
     pointsize=defaultPointSize,
 )
-plot(as.phylo(hc), type = "unrooted", cex = 0.4,
-     tip.color = partyColors[partyRepresentedByEachVote],
-     no.margin = TRUE,
-     main=pattern,
-     rotate.tree=-85)
+phyloPlot(hc, plotType="unrooted", partyColors[partyRepresentedByEachVote])
 dev.off()
 
-par(mar=c(1,1,2,1), xpd=NA)
 png(countrySpecificPath("plot5alt_radial.png"),
     width=defaultWidth,
     height=defaultHeight,
     pointsize=defaultPointSize,
 )
-plot(as.phylo(hc), type = "radial", cex = 0.4,
-     tip.color = partyColors[partyRepresentedByEachVote],
-     edge.width = 2,
-     no.margin = TRUE,
-     main=pattern,
-     rotate.tree=-85)
+phyloPlot(hc, plotType="radial", partyColors[partyRepresentedByEachVote])
 dev.off()
 
-par(mar=c(0,0,0,0), xpd=NA)
 png(countrySpecificPath("plot3_phylogram.png"),
     width=as.integer(defaultWidth*2.0),
     height=as.integer(defaultHeight*2.0),
     pointsize=15,
 )
-plot(as.phylo(hc), type = "phylogram", cex = 2.5,
-     tip.color = partyColors[partyRepresentedByEachVote],
-     edge.width = 2,
-     no.margin = TRUE,
-     main=pattern)
+phyloPlot(hc, plotType="phylogram", partyColors[partyRepresentedByEachVote])
 dev.off()
 
-par(mar=c(0,0,0,0), xpd=NA)
 png(countrySpecificPath("plot3_phylogram_long.png"),
     width=as.integer(defaultWidth*2.0),
     height=as.integer(defaultHeight*4.0),
     pointsize=15,
 )
-plot(as.phylo(hc), type = "phylogram", cex = 2.5,
-     tip.color = partyColors[partyRepresentedByEachVote],
-     edge.width = 2,
-     no.margin = TRUE,
-     main=pattern)
+phyloPlot(hc, plotType="phylogram", partyColors[partyRepresentedByEachVote])
 dev.off()
 
-par(mar=c(0,0,0,0), xpd=NA)
 png(countrySpecificPath("plot3alt_cladogram.png"),
     width=as.integer(defaultWidth*2.0),
     height=as.integer(defaultHeight*2.0),
     pointsize=15,
 )
-plot(as.phylo(hc), type = "cladogram", cex = 2.5,
-     tip.color = partyColors[partyRepresentedByEachVote],
-     edge.width = 2,
-     no.margin = TRUE,
-     main=pattern)
+phyloPlot(hc, plotType="cladogram", partyColors[partyRepresentedByEachVote])
 dev.off()
 
 # plots not mentioned in the original article
@@ -207,7 +145,7 @@ library(ggplot2)
 png(countrySpecificPath("plotB_aes.png"),
     width=as.integer(defaultWidth/3),
     height=as.integer(defaultHeight/3),
-    pointsize=defaultPointSize,
+    pointsize=defaultPointSize
 )
 ggplot(df, aes(X1, X2, color=parties, label=voterNames)) +
   geom_text(size=4) +
@@ -227,7 +165,7 @@ par(mar=c(0,0,2,0))
 png(countrySpecificPath("plotC_phylo.png"),
     width=defaultWidth,
     height=defaultHeight,
-    pointsize=defaultPointSize,
+    pointsize=defaultPointSize
 )
 plot(as.phylo(hc2), type = "fan", cex = 0.4,
      tip.color = colors[as.numeric(factor(voterIdsAndTheirMostFrequentParty[-rem]))],
