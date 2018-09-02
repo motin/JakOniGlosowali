@@ -66,9 +66,8 @@ server <- function(input, output) {
       ),
       conditionalPanel("input.selected_country !== ''",
                        fluidRow(column(3, br(),p(i18n()$t("statutes-filter-instruction"))),
-                                column(4, selectInput("pattern", "", choices = selectableVotingTopics, selected = "", multiple = TRUE)),
-                                column(3, br(),actionButton("go", i18n()$t("show-button-text"))),
-                                column(2, selectInput("plotType", "", choices = c("fan", "phylogram", "cladogram", "unrooted", "radial"), selected = ""))  ),
+                                column(6, selectInput("pattern", "", choices = selectableVotingTopics, selected = "", multiple = TRUE)),
+                                column(3, selectInput("plotType", "", choices = c("fan", "phylogram", "cladogram", "unrooted", "radial"), selected = ""))  ),
                        fluidRow(column(12, plotOutput("speakerDendro", width = 1000, height = 1000))),
                        fluidRow(column(12, plotOutput("votingDirectionPartyOverview", width = 1000, height = 500))),
                        fluidRow(column(12,
@@ -77,14 +76,16 @@ server <- function(input, output) {
       )
     )
   })
-  
-  formValues <- eventReactive(input$go, {
-    c(input$plotType, input$pattern)
+
+  plotType <- reactive({
+    input$plotType
   })
   
-  getSpeakerDendro <- function(params) {
-    plotType <- params[1]
-    pattern <- params[-1]
+  pattern <- reactive({
+    input$pattern
+  })
+  
+  getSpeakerDendro <- function(pattern, plotType) {
     message("getVotingDirectionPartyOverview - pattern: ")
     message(str(pattern))
     message("getVotingDirectionPartyOverview - plotType: ")
@@ -99,8 +100,7 @@ server <- function(input, output) {
     phyloPlotPlain(votingData$hc, plotType, partyColors[votingData$partyRepresentedByEachVote], plotTitle)
   }
   
-  getVotingDirectionPartyOverview <- function(params) {
-    pattern <- params[-1]
+  getVotingDirectionPartyOverview <- function(pattern) {
     message("getVotingDirectionPartyOverview - pattern: ")
     message(str(pattern))
     
@@ -108,22 +108,19 @@ server <- function(input, output) {
     
     par(mar=c(1,1,2,1), xpd=NA)
     plotVotingDirectionPartyOverview(selectionOfVotes)
-    
   }
   
   output$speakerDendro <- renderPlot({
     withProgress(message = i18n()$t("progress-message"),
                  detail = i18n()$t("progress-detail"), value = 0, {
-                   updateCountrySpecificData()
-                   getSpeakerDendro(formValues())
+                   getSpeakerDendro(pattern(), plotType())
                  })
   })
   
   output$votingDirectionPartyOverview <- renderPlot({
     withProgress(message = i18n()$t("progress-message"),
                  detail = i18n()$t("progress-detail"), value = 0, {
-                   updateCountrySpecificData()
-                   getVotingDirectionPartyOverview(formValues())
+                   getVotingDirectionPartyOverview(pattern())
                  })
   })
   

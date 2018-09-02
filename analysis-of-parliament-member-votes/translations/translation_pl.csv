@@ -1,9 +1,9 @@
 refs,pl
 change-language,Wybierz język
 change-country,Change country
-intro-html,<b>Podobieństwa w głosowaniach posłów</b>.<br>Wybierz ustawy nad którymi głosowano (lub pozostaw puste pole) i naciśnij przycisk <b>Pokaż</b>.
+intro-html,<b>Podobieństwa w głosowaniach posłów</b>
 show-button-text,Pokaż!
-statutes-filter-instruction,Tylko głosowania o ustawach
+statutes-filter-instruction,Tylko głosowania o ustawach:
 progress-message,Twają obliczenia
 progress-detail,To może chwilę potrwać...
 votings,Głosowań
