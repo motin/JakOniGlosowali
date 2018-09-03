@@ -33,17 +33,41 @@ loadCountrySpecificData <- function() {
   
 }
 
-getVotesThatMatchesTopicPattern <- function(pattern) {
-  if (length(pattern) == 0 || pattern[1] == "") {
-    votingTopicsThatMatchesPattern <- unique(all_votes$topic_voting)
+getVotesThatMatchesTopicPatterns <- function(patterns) {
+  if (length(patterns) == 0 || patterns[1] == "") {
+    votingTopicsThatMatchesPatterns <- unique(all_votes$topic_voting)
   } else {
-    votingTopicsThatMatchesPattern <- unique(unlist(sapply(pattern, function(w) {
+    votingTopicsThatMatchesPatterns <- unique(unlist(sapply(patterns, function(w) {
       grep(unique(all_votes$topic_voting), pattern = w, value = TRUE, fixed = TRUE)
     })))
-    # votingTopicsThatMatchesPattern <- grep(unique(all_votes$topic_voting), pattern = pattern, value = TRUE)
   }
   selectionOfVotes <- all_votes %>%
-    filter(topic_voting %in% votingTopicsThatMatchesPattern)
+    filter(topic_voting %in% votingTopicsThatMatchesPatterns)
+}
+
+getVotesThatMatchesVotingIds <- function(voting_ids) {
+  if (length(voting_ids) == 0 || voting_ids[1] == "") {
+    votingTopicsThatMatchesVotingId <- unique(all_votes$id_voting)
+  } else {
+    votingTopicsThatMatchesVotingId <- unique(unlist(sapply(voting_ids, function(w) {
+      grep(unique(all_votes$id_voting), pattern = w, value = TRUE, fixed = TRUE)
+    })))
+  }
+  selectionOfVotes <- all_votes %>%
+    filter(id_voting %in% votingTopicsThatMatchesVotingId)
+}
+
+getSelectableVotings <<- function(all_votes) {
+  selectableVotingTopics <- getSelectableVotingTopics(all_votes)
+  votesWithSelectableVotingTopics <- all_votes %>%
+    filter(topic_voting %in% selectableVotingTopics)
+  selectableVotings <- votesWithSelectableVotingTopics %>% distinct(id_voting, .keep_all = TRUE) # removes duplicates in relation to the id_voting column
+  selectableVotings <- votesWithSelectableVotingTopics %>% distinct(topic_voting, .keep_all = TRUE) # removes duplicates in relation to the topic_voting column
+}
+
+getSelectableVotingChoices <<- function(all_votes) {
+  selectableVotings <- getSelectableVotings(all_votes)
+  selectableVotingTopics <- setNames(selectableVotings$id_voting,selectableVotings$topic_voting)
 }
 
 crunchVotingData <- function(selectionOfVotes) {

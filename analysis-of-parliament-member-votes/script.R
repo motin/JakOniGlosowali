@@ -20,7 +20,7 @@ pdf.options(encoding='ISOLatin2.enc')
 
 numCores <- detectCores() # get the number of cores available
 
-selectionOfVotes <- getVotesThatMatchesTopicPattern(pattern)
+selectionOfVotes <- getVotesThatMatchesTopicPatterns(pattern)
 
 png(countrySpecificPath("plotA_mosaicplot.png"),
     width=defaultWidth,

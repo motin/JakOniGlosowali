@@ -37,9 +37,11 @@ server <- function(input, output) {
     loadCountrySpecificData()
     req(all_votes)
     
-    selectableVotingTopics <- sort(getSelectableVotingTopics(all_votes))
     
-    return (list(all_votes=all_votes, selectableVotingTopics=selectableVotingTopics))
+    selectableVotingChoices <- head(getSelectableVotingChoices(all_votes),1000) # max 1000 choices to prevent UI generation from freezing
+    sortedSelectableVotingChoices <- selectableVotingChoices[order(names(selectableVotingChoices), decreasing = FALSE)]
+    
+    return (list(all_votes=all_votes, sortedSelectableVotingChoices=sortedSelectableVotingChoices))
   })
   
   i18n <- reactive({
@@ -56,7 +58,8 @@ server <- function(input, output) {
   
   output$page_content <- renderUI({
     countrySpecificData <- updateCountrySpecificData()
-    selectableVotingTopics <- countrySpecificData$selectableVotingTopics
+    sortedSelectableVotingChoices <- countrySpecificData$sortedSelectableVotingChoices
+    all_votes <- countrySpecificData$all_votes
     ui <- tagList(
       fluidRow(column(9, HTML(i18n()$t("intro-html"))),
                column(3, selectInput("selected_language",
@@ -73,18 +76,30 @@ server <- function(input, output) {
                                   selected = input$plotType))
       ),
       fluidRow(column(3, br(),p(i18n()$t("statutes-filter-instruction"))),
-               column(9, selectInput("pattern", "", choices = selectableVotingTopics, selected = pattern(), multiple = TRUE, width = "100%"))
+               column(9, selectInput("voting_ids", "", choices = sortedSelectableVotingChoices, selected = voting_ids(), multiple = TRUE, width = "100%"))
       )
     )
     
-    # Generate ui for personal votes    
-    for(i in pattern()){
+    # Generate ui for personal votes
+    for(voting_id in voting_ids()){
+      selectableVotings <- getSelectableVotings(all_votes)
       input <- radioButtons("radio", label = i18n()$t("your-vote"),
                             choices = c("None",differentKindsOfVotes), 
                             selected = "None", inline = TRUE, width = "100%")
-      row <- fluidRow(column(12, HTML(paste("<h4>",i,"</h4>"))))
-      row2 <- fluidRow(column(12, input))
-      ui <- tagAppendChildren(ui, row, row2)
+      voting <- selectableVotings[selectableVotings$id_voting == voting_id, ]
+      title <- voting$topic_voting
+      date <- voting$date_meeting
+      description <- voting$description_voting
+      document_id <- voting$voting_related_document_ids
+      row <- fluidRow(column(12, HTML(paste("<h4>",title,"</h4>"))))
+      foohtml <- paste('<div id="main" class="votering box-stroke">
+                       <p><b>Beslutsdatum:</b> ',date,'</p>
+                       ',p(description),'
+                       <p style="text-align:right;"><a href="http://data.riksdagen.se/dokument/',document_id,'">Läs förslaget i sin helhet &rarr;</a></p>
+                       </div>', sep="")
+      row2 <- fluidRow(column(12, HTML(paste("",foohtml,""))))
+      row3 <- fluidRow(column(12, input))
+      ui <- tagAppendChildren(ui, row, row2, row3)
     }
     
     ui <- tagAppendChildren(ui,
@@ -101,17 +116,17 @@ server <- function(input, output) {
     input$plotType
   })
   
-  pattern <- reactive({
-    input$pattern
+  voting_ids <- reactive({
+    input$voting_ids
   })
   
-  getSpeakerDendro <- function(pattern, plotType) {
-    message("getVotingDirectionPartyOverview - pattern: ")
-    message(str(pattern))
+  getSpeakerDendro <- function(voting_ids, plotType) {
+    message("getVotingDirectionPartyOverview - voting_ids: ")
+    message(str(voting_ids))
     message("getVotingDirectionPartyOverview - plotType: ")
     message(plotType)
     
-    selectionOfVotes <- getVotesThatMatchesTopicPattern(pattern)
+    selectionOfVotes <- getVotesThatMatchesVotingIds(voting_ids)
     
     votingData <- crunchVotingData(selectionOfVotes)
     
@@ -120,11 +135,11 @@ server <- function(input, output) {
     phyloPlotPlain(votingData$hc, plotType, partyColors[votingData$partyRepresentedByEachVote], plotTitle)
   }
   
-  getVotingDirectionPartyOverview <- function(pattern) {
-    message("getVotingDirectionPartyOverview - pattern: ")
-    message(str(pattern))
+  getVotingDirectionPartyOverview <- function(voting_ids) {
+    message("getVotingDirectionPartyOverview - voting_ids: ")
+    message(str(voting_ids))
     
-    selectionOfVotes <- getVotesThatMatchesTopicPattern(pattern)
+    selectionOfVotes <- getVotesThatMatchesVotingIds(voting_ids)
     
     par(mar=c(1,1,2,1), xpd=NA)
     plotVotingDirectionPartyOverview(selectionOfVotes)
@@ -133,14 +148,14 @@ server <- function(input, output) {
   output$speakerDendro <- renderPlot({
     withProgress(message = i18n()$t("progress-message"),
                  detail = i18n()$t("progress-detail"), value = 0, {
-                   getSpeakerDendro(pattern(), plotType())
+                   getSpeakerDendro(voting_ids(), plotType())
                  })
   })
   
   output$votingDirectionPartyOverview <- renderPlot({
     withProgress(message = i18n()$t("progress-message"),
                  detail = i18n()$t("progress-detail"), value = 0, {
-                   getVotingDirectionPartyOverview(pattern())
+                   getVotingDirectionPartyOverview(voting_ids())
                  })
   })
   

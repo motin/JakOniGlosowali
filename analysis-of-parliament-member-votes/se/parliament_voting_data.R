@@ -62,7 +62,7 @@ all_votes <- all_votes %>%
   filter(period %in% c("2014/15", "2015/16", "2016/17", "2017/18"))
 
 getSelectableVotingTopics <<- function(all_votes) {
-    selectableVotingTopics_a <<- grep(unique(all_votes$topic_voting), pattern = "", value=TRUE)
+    selectableVotingTopics <<- grep(unique(all_votes$topic_voting), pattern = "", value=TRUE)
 }
 
 # optionally filter votes on specific topics (an empty pattern = no filter)

@@ -24,7 +24,10 @@ v.valkrets AS voter_district,
 v.rm AS period,
 v.id AS voting_db_record_id,
 duf.votering_id AS duf_db_record_id,
-d.hangar_id AS d_db_record_id
+d.hangar_id AS document_db_record_id,
+GROUP_CONCAT(d.dok_id) AS voting_related_document_ids,
+GROUP_CONCAT(d.dokument_url_html) AS more_info_url_voting,
+CONCAT(duf.forslag, ' - ', duf.forslag_del2) AS description_voting
 FROM
 votering v
 INNER JOIN
