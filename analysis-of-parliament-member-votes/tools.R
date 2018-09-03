@@ -108,7 +108,8 @@ phyloPlotPlain <- function(hc, plotType, tipColor, title="") {
 
 plotVotingDirectionPartyOverview <- function(selectionOfVotes) {
   
-  partiesAndTheirVotes <- table(selectionOfVotes$party,selectionOfVotes$vote)[,c("For","Absent","Abstained","Against")]
+  differentKindsOfVotes <- c("For","Absent","Abstained","Against")
+  partiesAndTheirVotes <- table(factor(selectionOfVotes$party),factor(selectionOfVotes$vote, differentKindsOfVotes))[,differentKindsOfVotes]
   tt<-with(selectionOfVotes, partiesAndTheirVotes)
   partiesAndTheirVotes_sortedByMostFrequent <- tt[order(tt[,2], decreasing=T),]
   
