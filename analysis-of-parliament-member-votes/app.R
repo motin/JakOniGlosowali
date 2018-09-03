@@ -61,7 +61,7 @@ server <- function(input, output) {
     sortedSelectableVotingChoices <- countrySpecificData$sortedSelectableVotingChoices
     all_votes <- countrySpecificData$all_votes
     ui <- tagList(
-      fluidRow(column(9, HTML(i18n()$t("intro-html"))),
+      fluidRow(column(9, h2(i18n()$t("intro-html")), p(i18n()$t("general-instructions-html")), h4(i18n()$t("user-vote-instructions-title")), p(i18n()$t("user-vote-instructions-html"))),
                column(3, selectInput("selected_language",
                                      i18n()$t("change-language"),
                                      choices = translator$languages[! translator$languages %in% c("refs")],

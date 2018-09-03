@@ -2,7 +2,10 @@ refs,pl
 change-language,Język
 change-country,Kraj
 plot-type,Visualization type
-intro-html,<b>Podobieństwa w głosowaniach posłów</b>
+intro-html,Podobieństwa w głosowaniach posłów
+general-instructions-html,"The colors represent the political parties. Each name corresponds to a member of the parliament. In the top visualization, parliament members that are closer each other in the tree have voted similarly and vice versa. Only members that have registered votes on at least 90% of the votings are included. The bottom visualization shows an overview of how the parties have voted. The votings themselves are restricted to the primary votings on subject matters."
+user-vote-instructions-title,"What if you where a member of Parliament?"
+user-vote-instructions-html,"To see how similar you would have voted if you were a member of parliament, choose one or more statutes to include below, then register your own votes. Your votes will show up as ”Me” in a party referenced ”ME”. After having cast your own votes on subject matters that are important to you, you should see how you align with other political parties."
 show-button-text,Pokaż!
 statutes-filter-instruction,Tylko głosowania o ustawach:
 progress-message,Twają obliczenia
