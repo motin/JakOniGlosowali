@@ -12,6 +12,9 @@ country <- "se"
 # include data and common functions
 source("tools.R")
 
+# load country-specific data
+loadCountrySpecificData()
+
 # settings for plot exports
 defaultWidth <- 2000
 defaultHeight <- 2000

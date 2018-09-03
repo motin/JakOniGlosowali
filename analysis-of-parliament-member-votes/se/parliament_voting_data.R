@@ -40,22 +40,29 @@ image(as.matrix(1:10, 1:10), col=partyColors[["SD"]], main=partyNames[["SD"]])
 image(as.matrix(1:10, 1:10), col=partyColors[["FI"]], main=partyNames[["FI"]])
 image(as.matrix(1:10, 1:10), col=partyColors[["PP"]], main=partyNames[["PP"]])
 
-load(countrySpecificPath("all_votes.rda"))
+if (exists("all_votes")) {
+  voteDataCountry <- all_votes$country[1]
+} else {
+  voteDataCountry <- NULL
+}
+if (is.null(voteDataCountry) || voteDataCountry != "se") {
+  load(countrySpecificPath("all_votes.rda"))
 
-# translate the vote column
-all_votes$vote[all_votes$vote == "Frånvarande"] <- "Absent"
-all_votes$vote[all_votes$vote == "Nej"] <- "Against"
-all_votes$vote[all_votes$vote == "Avstår"] <- "Abstained"
-all_votes$vote[all_votes$vote == "Ja"] <- "For"
-
-# make party column uppercase
-all_votes$party <- toupper(all_votes$party)
-
-# debug - echo the unique party values in the data
-levels(factor(all_votes$party))
-
-# Folkpartiet changed name to Liberalerna - still the same party so we treat all FP votes as L votes
-all_votes$party[all_votes$party == "FP"] <- "L"
+  # translate the vote column
+  all_votes$vote[all_votes$vote == "Frånvarande"] <- "Absent"
+  all_votes$vote[all_votes$vote == "Nej"] <- "Against"
+  all_votes$vote[all_votes$vote == "Avstår"] <- "Abstained"
+  all_votes$vote[all_votes$vote == "Ja"] <- "For"
+  
+  # make party column uppercase
+  all_votes$party <- toupper(all_votes$party)
+  
+  # debug - echo the unique party values in the data
+  levels(factor(all_votes$party))
+  
+  # Folkpartiet changed name to Liberalerna - still the same party so we treat all FP votes as L votes
+  all_votes$party[all_votes$party == "FP"] <- "L"
+}
 
 # Only include votes from a specific period
 all_votes <- all_votes %>%

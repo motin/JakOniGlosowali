@@ -26,7 +26,7 @@ server <- function(input, output) {
   updateCountrySpecificData <- reactive({
     # country to work with
     country <<- input$selected_country
-    message("Country: ")
+    message("updateCountrySpecificData - country: ")
     cat(str(country))
     
     if (length(country) == 0 || ! country %in% c("se", "pl")) {
@@ -148,6 +148,7 @@ server <- function(input, output) {
   output$speakerDendro <- renderPlot({
     withProgress(message = i18n()$t("progress-message"),
                  detail = i18n()$t("progress-detail"), value = 0, {
+                   countrySpecificData <- updateCountrySpecificData()
                    getSpeakerDendro(voting_ids(), plotType())
                  })
   })
@@ -155,6 +156,7 @@ server <- function(input, output) {
   output$votingDirectionPartyOverview <- renderPlot({
     withProgress(message = i18n()$t("progress-message"),
                  detail = i18n()$t("progress-detail"), value = 0, {
+                   countrySpecificData <- updateCountrySpecificData()
                    getVotingDirectionPartyOverview(voting_ids())
                  })
   })
