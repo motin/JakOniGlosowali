@@ -25,6 +25,14 @@ numCores <- detectCores() # get the number of cores available
 
 selectionOfVotes <- getVotesThatMatchesTopicPatterns(pattern)
 
+# with additional user votes
+selectionOfVotes <- getVotesThatMatchesVotingIds("8DB8105A-2ACC-44C2-972D-B7A5F8DF07D9")
+userVotes <- data.frame(voting_id=character(),vote=character())
+# userVotes <- data.frame(id_voting=c("8DB8105A-2ACC-44C2-972D-B7A5F8DF07D9"), vote=c("For"))
+if (nrow(userVotes) > 0) {
+  selectionOfVotes <- addUserVotes(selectionOfVotes, userVotes)
+}
+
 png(countrySpecificPath("plotA_mosaicplot.png"),
     width=defaultWidth,
     height=defaultHeight,

@@ -57,6 +57,31 @@ getVotesThatMatchesVotingIds <- function(voting_ids) {
     filter(id_voting %in% votingTopicsThatMatchesVotingId)
 }
 
+addUserVotes <- function(selectionOfVotes, userVotes) {
+  if (length(userVotes) == 0) {
+    return
+  }
+  selectableVotings <- getSelectableVotings(selectionOfVotes)
+  index <- match(userVotes$id_voting, selectableVotings$id_voting)
+  userVotes$voter_id <- "-1"
+  userVotes$party <- "ME"
+  userVotes$vote <- as.character(userVotes$vote)
+  userVotes$id_voting <- as.character(userVotes$id_voting)
+  userVotes$voter_name <- "Me"
+  userVotes$voter_district <- "Here"
+  userVotes$voting_db_record_id <- sample(1000000000:2000000000,nrow(userVotes),replace=T)
+  # voting metadata
+  userVotes$topic_voting <- selectableVotings[index, ]$topic_voting
+  userVotes$date_meeting <- selectableVotings[index, ]$date_meeting
+  userVotes$period <- selectableVotings[index, ]$period
+  userVotes$duf_db_record_id <- selectableVotings[index, ]$duf_db_record_id
+  userVotes$document_db_record_id <- selectableVotings[index, ]$document_db_record_id
+  userVotes$voting_related_document_ids <- selectableVotings[index, ]$voting_related_document_ids
+  userVotes$more_info_url_voting <- selectableVotings[index, ]$more_info_url_voting
+  userVotes$description_voting <- selectableVotings[index, ]$description_voting
+  selectionOfVotes <- rbind(selectionOfVotes, userVotes)
+}
+
 getSelectableVotings <<- function(all_votes) {
   selectableVotingTopics <- getSelectableVotingTopics(all_votes)
   votesWithSelectableVotingTopics <- all_votes %>%

@@ -125,6 +125,20 @@ server <- function(input, output) {
     input$voting_ids
   })
   
+  extractUserVotesFromInput <- function(input) {
+    userVotesVotingIdColumn <- character()
+    userVotesColumn <- character()
+    for(voting_id in voting_ids()){
+      inputId <- paste0("user_vote[", voting_id, "]", sep="")
+      vote <- input[[inputId]]
+      if (!is.null(vote) && vote != "None") {
+        userVotesVotingIdColumn <- append(userVotesVotingIdColumn, voting_id)
+        userVotesColumn <- append(userVotesColumn, vote)
+      }
+    }
+    userVotes <- data.frame(id_voting=userVotesVotingIdColumn,vote=userVotesColumn)
+  }
+  
   getSpeakerDendro <- function(voting_ids, plotType) {
     message("getVotingDirectionPartyOverview - voting_ids: ")
     message(str(voting_ids))
@@ -132,6 +146,10 @@ server <- function(input, output) {
     message(plotType)
     
     selectionOfVotes <- getVotesThatMatchesVotingIds(voting_ids)
+    userVotes <- extractUserVotesFromInput(input);
+    if (nrow(userVotes) > 0) {
+      selectionOfVotes <- addUserVotes(selectionOfVotes, userVotes)
+    }
     
     votingData <- crunchVotingData(selectionOfVotes)
     
@@ -145,6 +163,10 @@ server <- function(input, output) {
     message(str(voting_ids))
     
     selectionOfVotes <- getVotesThatMatchesVotingIds(voting_ids)
+    userVotes <- extractUserVotesFromInput(input);
+    if (nrow(userVotes) > 0) {
+      selectionOfVotes <- addUserVotes(selectionOfVotes, userVotes)
+    }
     
     par(mar=c(1,1,2,1), xpd=NA)
     plotVotingDirectionPartyOverview(selectionOfVotes)
