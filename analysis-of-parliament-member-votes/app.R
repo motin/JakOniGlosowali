@@ -46,7 +46,11 @@ server <- function(input, output) {
     selected <- input$selected_language
     if (length(selected) > 0 && selected %in% translator$languages) {
       translator$set_translation_language(selected)
+    } else {
+      message("No valid language selected yet. Defaulting to en")
+      selected <- "en"
     }
+    translator$set_translation_language(selected)
     translator
   })
   
@@ -58,7 +62,7 @@ server <- function(input, output) {
                column(3, selectInput("selected_language",
                                      i18n()$t("change-language"),
                                      choices = translator$languages[! translator$languages %in% c("refs")],
-                                     selected = input$selected_language),
+                                     selected = translator$translation_language),
                       selectInput("selected_country",
                                   i18n()$t("change-country"),
                                   choices = c("se", "pl"),
