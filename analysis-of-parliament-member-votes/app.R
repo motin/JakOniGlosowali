@@ -83,9 +83,14 @@ server <- function(input, output) {
     # Generate ui for personal votes
     for(voting_id in voting_ids()){
       selectableVotings <- getSelectableVotings(all_votes)
-      input <- radioButtons("radio", label = i18n()$t("your-vote"),
-                            choices = c("None",differentKindsOfVotes), 
-                            selected = "None", inline = TRUE, width = "100%")
+      newInputId <- paste("user_vote[",voting_id,"]", sep="")
+      newInputValue <- "None"
+      if (newInputId %in% names(input)) {
+        newInputValue <- isolate(input[[newInputId]])
+      }
+      userVoteInput <- radioButtons(newInputId, label = i18n()$t("your-vote"),
+                                    choices = c("None",differentKindsOfVotes), 
+                                    selected = newInputValue, inline = TRUE, width = "100%")
       voting <- selectableVotings[selectableVotings$id_voting == voting_id, ]
       title <- voting$topic_voting
       date <- voting$date_meeting
@@ -98,7 +103,7 @@ server <- function(input, output) {
                        <p style="text-align:right;"><a href="http://data.riksdagen.se/dokument/',document_id,'">Läs förslaget i sin helhet &rarr;</a></p>
                        </div>', sep="")
       row2 <- fluidRow(column(12, HTML(paste("",foohtml,""))))
-      row3 <- fluidRow(column(12, input))
+      row3 <- fluidRow(column(12, userVoteInput))
       ui <- tagAppendChildren(ui, row, row2, row3)
     }
     
