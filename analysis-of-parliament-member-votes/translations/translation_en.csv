@@ -7,5 +7,6 @@ show-button-text,Show!
 statutes-filter-instruction,Only include votes on specific statutes:
 progress-message,Calculating...
 progress-detail,This may take a while
+your-vote,Your vote
 votings,Votings
 footer-html,Originally based on <a href=”https://github.com/mi2-warsaw/JakOniGlosowali/tree/master/glosy” target=”_blank”>this analysis of votes of the Polish Parliament</a>

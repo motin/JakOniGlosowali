@@ -16,6 +16,8 @@ library(tidyr)
 library(parallel)
 library(dendextend)
 
+differentKindsOfVotes <<- c("For","Absent","Abstained","Against")
+
 loadCountrySpecificData <- function() {
   
   message("loadCountrySpecificData country:")
@@ -108,7 +110,6 @@ phyloPlotPlain <- function(hc, plotType, tipColor, title="") {
 
 plotVotingDirectionPartyOverview <- function(selectionOfVotes) {
   
-  differentKindsOfVotes <- c("For","Absent","Abstained","Against")
   partiesAndTheirVotes <- table(factor(selectionOfVotes$party),factor(selectionOfVotes$vote, differentKindsOfVotes))[,differentKindsOfVotes]
   tt<-with(selectionOfVotes, partiesAndTheirVotes)
   partiesAndTheirVotes_sortedByMostFrequent <- tt[order(tt[,2], decreasing=T),]

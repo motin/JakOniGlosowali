@@ -53,7 +53,7 @@ server <- function(input, output) {
   output$page_content <- renderUI({
     countrySpecificData <- updateCountrySpecificData()
     selectableVotingTopics <- countrySpecificData$selectableVotingTopics
-    tagList(
+    ui <- tagList(
       fluidRow(column(9, HTML(i18n()$t("intro-html"))),
                column(3, selectInput("selected_language",
                                      i18n()$t("change-language"),
@@ -68,15 +68,29 @@ server <- function(input, output) {
                                   choices = c("fan", "phylogram", "cladogram", "unrooted", "radial"), 
                                   selected = input$plotType))
       ),
-      conditionalPanel("input.selected_country !== ''",
-                       fluidRow(column(3, br(),p(i18n()$t("statutes-filter-instruction"))),
-                                column(9, selectInput("pattern", "", choices = selectableVotingTopics, selected = "", multiple = TRUE, width = "100%"))
-                       ),
-                       fluidRow(column(12, plotOutput("speakerDendro", width = 1000, height = 1000))),
-                       fluidRow(column(12, plotOutput("votingDirectionPartyOverview", width = 1000, height = 500)))
-      ),
-      fluidRow(column(12, HTML(i18n()$t("footer-html"))))
+      fluidRow(column(3, br(),p(i18n()$t("statutes-filter-instruction"))),
+               column(9, selectInput("pattern", "", choices = selectableVotingTopics, selected = pattern(), multiple = TRUE, width = "100%"))
+      )
     )
+    
+    # Generate ui for personal votes    
+    for(i in pattern()){
+      input <- radioButtons("radio", label = i18n()$t("your-vote"),
+                            choices = c("None",differentKindsOfVotes), 
+                            selected = "None", inline = TRUE, width = "100%")
+      row <- fluidRow(column(12, HTML(paste("<h4>",i,"</h4>"))))
+      row2 <- fluidRow(column(12, input))
+      ui <- tagAppendChildren(ui, row, row2)
+    }
+    
+    ui <- tagAppendChildren(ui,
+                            conditionalPanel("input.selected_country !== ''",
+                                             fluidRow(column(12, plotOutput("speakerDendro", width = 1000, height = 1000))),
+                                             fluidRow(column(12, plotOutput("votingDirectionPartyOverview", width = 1000, height = 500)))
+                            ),
+                            fluidRow(column(12, HTML(i18n()$t("footer-html"))))
+    )
+    ui
   })
   
   plotType <- reactive({
