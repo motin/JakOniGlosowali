@@ -61,6 +61,8 @@ addUserVotes <- function(selectionOfVotes, userVotes) {
   if (length(userVotes) == 0) {
     return
   }
+  message("Adding the following user votes:")
+  print(userVotes)
   selectableVotings <- getSelectableVotings(selectionOfVotes)
   index <- match(userVotes$id_voting, selectableVotings$id_voting)
   userVotes$voter_id <- "-1"

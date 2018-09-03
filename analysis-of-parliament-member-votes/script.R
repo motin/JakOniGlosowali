@@ -26,9 +26,9 @@ numCores <- detectCores() # get the number of cores available
 selectionOfVotes <- getVotesThatMatchesTopicPatterns(pattern)
 
 # with additional user votes
-selectionOfVotes <- getVotesThatMatchesVotingIds("8DB8105A-2ACC-44C2-972D-B7A5F8DF07D9")
-userVotes <- data.frame(voting_id=character(),vote=character())
+# selectionOfVotes <- getVotesThatMatchesVotingIds("8DB8105A-2ACC-44C2-972D-B7A5F8DF07D9")
 # userVotes <- data.frame(id_voting=c("8DB8105A-2ACC-44C2-972D-B7A5F8DF07D9"), vote=c("For"))
+userVotes <- data.frame(voting_id=character(),vote=character())
 if (nrow(userVotes) > 0) {
   selectionOfVotes <- addUserVotes(selectionOfVotes, userVotes)
 }

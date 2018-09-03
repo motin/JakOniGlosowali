@@ -12,4 +12,4 @@ progress-message,Beräknar...
 progress-detail,Det här kan ta en stund
 your-vote,Din röst
 votings,Voteringar
-footer-html,"Ursprungligen baserad på <a href=”https://github.com/mi2-warsaw/JakOniGlosowali/tree/master/glosy” target=”_blank”>denna analys av polska riksdagsröster</a>"
+footer-html,"Ursprungligen baserad på <a href='https://deepsense.ai/data-mining-of-the-votes-of-members-of-parliament/' target='_blank'>denna analys av polska riksdagsröster</a>"

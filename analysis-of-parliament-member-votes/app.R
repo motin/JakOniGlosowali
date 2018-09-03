@@ -8,6 +8,13 @@ source("tools.R")
 
 translator <- Translator$new(translation_csvs_path = "translations")
 
+# https://github.com/daattali/advanced-shiny/tree/master/reactive-dedupe
+dedupe <- function(r) {
+  makeReactiveBinding("val")
+  observe(val <<- r(), priority = 10)
+  reactive(val)
+}
+
 ui <- fluidPage(
   tags$head(tags$script("(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -125,7 +132,7 @@ server <- function(input, output) {
     input$voting_ids
   })
   
-  extractUserVotesFromInput <- function(input) {
+  extractUserVotesFromInput <- dedupe(reactive({
     userVotesVotingIdColumn <- character()
     userVotesColumn <- character()
     for(voting_id in voting_ids()){
@@ -137,16 +144,16 @@ server <- function(input, output) {
       }
     }
     userVotes <- data.frame(id_voting=userVotesVotingIdColumn,vote=userVotesColumn)
-  }
+  }))
   
   getSpeakerDendro <- function(voting_ids, plotType) {
-    message("getVotingDirectionPartyOverview - voting_ids: ")
-    message(str(voting_ids))
-    message("getVotingDirectionPartyOverview - plotType: ")
+    message("getSpeakerDendro - voting_ids: ")
+    print(voting_ids)
+    message("getSpeakerDendro - plotType: ")
     message(plotType)
     
     selectionOfVotes <- getVotesThatMatchesVotingIds(voting_ids)
-    userVotes <- extractUserVotesFromInput(input);
+    userVotes <- extractUserVotesFromInput()
     if (nrow(userVotes) > 0) {
       selectionOfVotes <- addUserVotes(selectionOfVotes, userVotes)
     }
@@ -160,10 +167,10 @@ server <- function(input, output) {
   
   getVotingDirectionPartyOverview <- function(voting_ids) {
     message("getVotingDirectionPartyOverview - voting_ids: ")
-    message(str(voting_ids))
+    print(voting_ids)
     
     selectionOfVotes <- getVotesThatMatchesVotingIds(voting_ids)
-    userVotes <- extractUserVotesFromInput(input);
+    userVotes <- extractUserVotesFromInput()
     if (nrow(userVotes) > 0) {
       selectionOfVotes <- addUserVotes(selectionOfVotes, userVotes)
     }
