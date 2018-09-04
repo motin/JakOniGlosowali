@@ -2,7 +2,7 @@ refs,en
 change-language,Language
 change-country,Country/Parliament
 plot-type,Visualization type
-intro-html,Similarities in the votes of Members of Parliament / SimParliament.com
+intro-html,Member of Parliament Simulator
 general-instructions-html,"The colors represent the political parties. Each name corresponds to a member of the parliament. Parliament members that are closer each other in the tree have voted similarly and vice versa. Only members that have registered votes on at least 90% of the votings are included. The votings themselves are restricted to the primary votings on subject matters."
 general-instructions-country-se-html,"The Swedish Parliament (Riksdag) data is from the periods 2014/15 to 2017/18 (exported Aug 28th 2018) and only includes the primary votings on the first decision point in each statute. To understand how the Riksdag-votings work, read <a href='http://www.riksdagen.se/en/how-the-riksdag-works/the-work-of-the-riksdag/debates-and-decisions-in-the-chamber/' target='_blank'>this intro</a>"
 user-vote-instructions-title,"What if you where a member of Parliament?"
@@ -13,4 +13,4 @@ progress-message,Calculating...
 progress-detail,This may take a while
 your-vote,Your vote
 votings,Votings
-footer-html,Originally based on <a href='https://deepsense.ai/data-mining-of-the-votes-of-members-of-parliament/' target='_blank'>this analysis of votes of the Polish Parliament</a>
+footer-html,Source code available <a href='https://github.com/motin/how-we-vote/tree/master/analysis-of-parliament-member-votes' target='_blank'>here</a>. Originally based on <a href='https://deepsense.ai/data-mining-of-the-votes-of-members-of-parliament/' target='_blank'>this analysis of votes of the Polish Parliament</a>

@@ -2,7 +2,7 @@ refs,sv
 change-language, Språk
 change-country, Land att analysera
 plot-type,Typ av visualisering
-intro-html,Likheter i riksdagsledamöternas röster / Minriksdag.se
+intro-html,Din egen röst i en simulerad riksdag
 general-instructions-html,"The colors represent the political parties. Each name corresponds to a member of the parliament. Parliament members that are closer each other in the tree have voted similarly and vice versa. Only members that have registered votes on at least 90% of the votings are included. The votings themselves are restricted to the primary votings on subject matters."
 general-instructions-country-se-html,"<a href='https://github.com/motin/riksdagsdata' target='_blank'>Riksdagsdatan</a> är från riksmötena 2014/15 till och med 2017/18 (exporterat 28 aug 2018) och inkluderar bara voteringarna för sakfrågan i punkt 1 i vardera utskottsförslag. För att förstå hur riksdagens voteringar fungerar, läs <a href='http://www.riksdagen.se/sv/sa-funkar-riksdagen/riksdagens-uppgifter/beslutar-om-lagar/' target='_blank'>denna introduktion</a>"
 user-vote-instructions-title,"What if you where a member of Parliament?"
@@ -13,4 +13,4 @@ progress-message,Beräknar...
 progress-detail,Det här kan ta en stund
 your-vote,Din röst
 votings,Voteringar
-footer-html,"Ursprungligen baserad på <a href='https://deepsense.ai/data-mining-of-the-votes-of-members-of-parliament/' target='_blank'>denna analys av polska riksdagsröster</a>"
+footer-html,"Källkod till denna webapp finns <a href='https://github.com/motin/how-we-vote/tree/master/analysis-of-parliament-member-votes' target='_blank'>här</a>. Ursprungligen baserad på <a href='https://deepsense.ai/data-mining-of-the-votes-of-members-of-parliament/' target='_blank'>denna analys av polska riksdagsröster</a>"
