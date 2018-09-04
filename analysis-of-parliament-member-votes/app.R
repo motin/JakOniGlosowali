@@ -16,6 +16,7 @@ dedupe <- function(r) {
 }
 
 ui <- fluidPage(
+  tags$head(includeHTML(("og-metadata.html"))),
   tags$head(includeHTML(("google-analytics.html"))),
   
   includeCSS("style.css"),
