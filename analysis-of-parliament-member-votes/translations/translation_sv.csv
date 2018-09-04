@@ -11,6 +11,6 @@ show-button-text,Visa!
 statutes-filter-instruction,Inkludera enbart röster på specifika utskottsförslag:
 progress-message,Beräknar...
 progress-detail,Det här kan ta en stund
-your-vote,Din röst
+your-vote,Hur röstar du i förhållande till riksdagsutskottets förslag till beslut?
 votings,Voteringar
 footer-html,"Källkod till denna webapp finns <a href='https://github.com/motin/how-we-vote/tree/master/analysis-of-parliament-member-votes' target='_blank'>här</a>. Ursprungligen baserad på <a href='https://deepsense.ai/data-mining-of-the-votes-of-members-of-parliament/' target='_blank'>denna analys av polska riksdagsröster</a>"
