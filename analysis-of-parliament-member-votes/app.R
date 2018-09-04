@@ -126,8 +126,8 @@ server <- function(input, output) {
       foohtml <- paste('<div id="main" class="votering box-stroke">
                        <p><b>Beslutsdatum:</b> ',date,'</p>
                        ',description,'
-                       <p><a href="http://www.riksdagen.se/sv/global/sok/?q=',document_id,'&st=1">Sök på förslaget på riksdagen.se &rarr;</a></p>
-                       <p><a href="http://data.riksdagen.se/dokument/',document_id,'">Läs förslagsdokumentet i sin helhet &rarr;</a></p>
+                       <p><a href="http://www.riksdagen.se/sv/global/sok/?q=',document_id,'&st=1" target="_blank">Sök på förslaget på riksdagen.se &rarr;</a></p>
+                       <p><a href="http://data.riksdagen.se/dokument/',document_id,'" target="_blank">Läs förslagsdokumentet i sin helhet &rarr;</a></p>
                        </div>', sep="")
       row2 <- fluidRow(column(12, HTML(paste("",foohtml,""))))
       row3 <- fluidRow(column(12, userVoteInput))
