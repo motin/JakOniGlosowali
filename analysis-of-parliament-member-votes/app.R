@@ -25,6 +25,11 @@ ui <- fluidPage(
 
 server <- function(input, output) {
   
+  # Use to restore hard-coded form data
+  restored <- data.frame(id_voting=as.character(c(
+  )), vote = as.character(c(
+  )))
+  
   updateCountrySpecificData <- reactive({
     # country to work with
     country <<- input$selected_country
@@ -83,12 +88,20 @@ server <- function(input, output) {
     )
     
     # Generate ui for personal votes
-    for(voting_id in voting_ids()){
-      selectableVotings <- getSelectableVotings(all_votes)
+    selectableVotings <- getSelectableVotings(all_votes)
+    # for(voting_id in sortedSelectableVotingChoices){
+    for (voting_id in voting_ids()){
       newInputId <- paste("user_vote[",voting_id,"]", sep="")
       newInputValue <- "None"
-      if (newInputId %in% names(input)) {
+      # if (voting_id %in% voting_ids()){
+      if (newInputId %in% isolate(names(input))) {
         newInputValue <- isolate(input[[newInputId]])
+      } else {
+        # check if should be restored from previous input
+        valueToRestore <- restored$vote[restored$id_voting == voting_id]
+        if (length(valueToRestore) > 0) {
+          newInputValue <- valueToRestore
+        }
       }
       userVoteInput <- radioButtons(newInputId, label = i18n()$t("your-vote"),
                                     choices = c("None",differentKindsOfVotes), 
@@ -124,7 +137,15 @@ server <- function(input, output) {
   })
   
   voting_ids <- reactive({
-    input$voting_ids
+    result <- input$voting_ids
+    
+    if (length(result) == 0) {
+      message("No valid voting_ids selected yet. Defaulting to restore previous values")
+      result <- restored$id_voting
+    }
+    
+    result
+    
   })
   
   extractUserVotesFromInput <- dedupe(reactive({
