@@ -21,7 +21,7 @@ ui <- fluidPage(
   includeCSS("style.css"),
   
   uiOutput("page_content")
-  )
+)
 
 server <- function(input, output) {
   
@@ -76,7 +76,7 @@ server <- function(input, output) {
                       selectInput("selected_country",
                                   i18n()$t("change-country"),
                                   choices = c("se", "pl"),
-                                  selected = input$selected_country),
+                                  selected = country),
                       selectInput("plotType", 
                                   i18n()$t("plot-type"), 
                                   choices = c("fan", "phylogram", "cladogram", "unrooted", "radial"), 
@@ -86,6 +86,12 @@ server <- function(input, output) {
                column(9, selectInput("voting_ids", "", choices = sortedSelectableVotingChoices, selected = voting_ids(), multiple = TRUE, width = "100%"))
       )
     )
+    
+    if (country == "se") {
+      ui <- tagAppendChild(ui,
+                           fluidRow(column(12, HTML(i18n()$t("general-instructions-country-se-html"))))
+      )
+    }
     
     # Generate ui for personal votes
     selectableVotings <- getSelectableVotings(all_votes)
@@ -109,23 +115,34 @@ server <- function(input, output) {
       voting <- selectableVotings[selectableVotings$id_voting == voting_id, ]
       title <- voting$topic_voting
       date <- voting$date_meeting
-      description <- voting$description_voting
+      if (!is.na(voting$description_voting) && length(voting$description_voting) > 0) {
+        description <- p(voting$description_voting)
+      } else {
+        description <- ""
+      }
       document_id <- voting$voting_related_document_ids
       row <- fluidRow(column(12, HTML(paste("<h4>",title,"</h4>"))))
       foohtml <- paste('<div id="main" class="votering box-stroke">
                        <p><b>Beslutsdatum:</b> ',date,'</p>
-                       ',p(description),'
-                       <p style="text-align:right;"><a href="http://data.riksdagen.se/dokument/',document_id,'">Läs förslaget i sin helhet &rarr;</a></p>
+                       ',description,'
+                       <p><a href="http://www.riksdagen.se/sv/global/sok/?q=',document_id,'&st=1">Sök på förslaget på riksdagen.se &rarr;</a></p>
+                       <p><a href="http://data.riksdagen.se/dokument/',document_id,'">Läs förslagsdokumentet i sin helhet &rarr;</a></p>
                        </div>', sep="")
       row2 <- fluidRow(column(12, HTML(paste("",foohtml,""))))
       row3 <- fluidRow(column(12, userVoteInput))
       ui <- tagAppendChildren(ui, row, row2, row3)
+      # } else {
+      #   userVoteInput <- conditionalPanel("false",radioButtons(newInputId, label = i18n()$t("your-vote"),
+      #                                  choices = c("None",differentKindsOfVotes), 
+      #                                 selected = newInputValue, inline = TRUE, width = "100%"))
+      #   ui <- tagAppendChildren(ui, userVoteInput)
+      # }
     }
     
     ui <- tagAppendChildren(ui,
                             conditionalPanel("input.selected_country !== ''",
-                                             fluidRow(column(12, plotOutput("speakerDendro", width = 1000, height = 1000))),
-                                             fluidRow(column(12, plotOutput("votingDirectionPartyOverview", width = 1000, height = 500)))
+                                             fluidRow(column(12, plotOutput("speakerDendro", width = 1000, height = 1000)))
+                                             # , fluidRow(column(12, plotOutput("votingDirectionPartyOverview", width = 1000, height = 500)))
                             ),
                             fluidRow(column(12, HTML(i18n()$t("footer-html"))))
     )
@@ -176,7 +193,7 @@ server <- function(input, output) {
     
     votingData <- crunchVotingData(selectionOfVotes)
     
-    plotTitle <- paste(paste(pattern, collapse = "\n"), "(",i18n()$t("votings"),length(unique(selectionOfVotes$id_voting)),")")
+    plotTitle <- paste(paste(pattern, collapse = "\n"), "(",i18n()$t("votings"),": ",length(unique(selectionOfVotes$id_voting)),")", sep="")
     par(mar=c(1,1,2,1), xpd=NA, font=2, family="mono")
     phyloPlotPlain(votingData$hc, plotType, partyColors[votingData$partyRepresentedByEachVote], plotTitle)
   }
